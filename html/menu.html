@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>侧滑菜单</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<style>
+			header {
+				height: 100px;
+				padding: 10px 20px;
+				background: #00A2ED;
+				font-size: 14px;
+				color: #FFF;
+			}
+			
+			.user-info>div,
+			.user-download>div {
+				display: inline-block;
+				/*字体描边*/
+				-webkit-text-stroke: 0.5px #fff;
+			}
+			
+			.user-name {
+				margin-left: 10px;
+				padding-top: 14px;
+				vertical-align: top;
+				opacity: 0.8;
+			}
+			
+			.head-image img {
+				height: 40px;
+				width: 40px;
+				border-radius: 50%;
+			}
+			
+			.user-download {
+				margin-top: 10px;
+			}
+			
+			.offline-download {
+				margin-left: 20%;
+			}
+			
+			.icon-xingxing,
+			.icon-msnui-download {
+				margin-right: 15px;
+			}
+			
+			.theme-list {
+				font-size: 16px;
+				background: #fff;
+			}
+			
+			-webkit-scrollbar {
+				display: none
+			}
+			
+			.theme-list>div {
+				padding-left: 15px;
+				line-height: 50px;
+				height: 50px;
+			}
+			
+			.home {
+				color: #2AACEC;
+			}
+			
+			.row {
+				transition: all 0.3s;
+				position: relative;
+			}
+			
+			.row-active {
+				background: rgba(221, 221, 221, 0.5);
+			}
+			
+			.icon-weibiaoti1 {
+				font-size: 20px;
+				margin: 0 10px 0 5px;
+			}
+			
+			.icon-youjiantou:before {
+				position: absolute;
+				right: 20%;
+				top: 0;
+				color: #999;
+				opacity: 0.5;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<header>
+				<div class="user-info">
+					<div class="head-image">
+						<img src="../img/icon.png" />
+					</div>
+					<div class="user-name">
+						<span>离线模式</span>
+					</div>
+				</div>
+				<div class="user-download">
+					<div class="user-collect">
+						<span class="iconfont icon-xingxing"></span>
+						<span>我的收藏</span>
+					</div>
+					<div class="offline-download">
+						<span class="iconfont icon-msnui-download"></span>
+						<span>离线下载</span>
+					</div>
+				</div>
+			</header>
+			<div class="theme-list" id="menu">
+				<div class="home" @click="back_index">
+					<span class="iconfont icon-weibiaoti1"></span>
+					<span>首页</span>
+				</div>
+				<div class="row" v-for="(item,index) in list" :class="{'row-active':i===index}" @click="selected(index)" :key="item.id">
+					<span :data-id='item.id'>{{item.name}}</span>
+					<span class="iconfont icon-youjiantou"></span>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				//触发返回事件时执行
+				beforeback: function() {
+					//获取首页webview对象
+					var index = plus.webview.getLaunchWebview();
+					//触发首页自定义事件，关闭遮罩层
+					//延迟触发事件，避免影响返回行为
+					setTimeout(function() {
+						window.scrollTo(0, 0); //重置滚动条位置
+						mui.fire(index, "close_mask", {});
+					}, 300)
+				}
+			})
+			var vm = new Vue({
+				el: '#menu',
+				data: {
+					list: [],
+					i: ''
+				},
+				mounted: function() {
+					var self = this;
+					mui.ajax('https://news-at.zhihu.com/api/4/themes', {
+						type: 'GET',
+						dataType: 'json',
+						timeout: 10000, //10秒超时
+						success: function(rsp) {
+							self.list = rsp.others;
+						},
+						error: function() {
+							mui.toast('获取内容失败');
+						}
+					})
+				},
+				methods: {
+					selected: function(index) {
+						this.i = index;
+					},
+					back_index: function() {
+						this.i = '';
+						mui.back();
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

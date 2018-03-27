@@ -1,0 +1,14 @@
+{
+  "index.html": {
+    "refer": [
+      "html/menu.html",
+      "html/browser.html",
+      "html/detail.html"
+    ]
+  },
+  "html/detail.html": {
+    "refer": [
+      "html/comment.html"
+    ]
+  }
+}

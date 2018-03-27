@@ -1,0 +1,78 @@
+body {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+/*
+ *  app-nav 组件样式 
+ * 
+ */
+.app-bar {
+	background: #00a2ed;
+	line-height: 55px;
+	color: #fff;
+	height: 55px;
+	box-shadow: 0px 2px 4px 0 rgba(0, 34, 77, 0.3);
+	position: fixed;
+	z-index: 990;
+	padding:0  10px;
+}
+.app-bar .iconfont {
+	/*增加触碰区域*/
+	padding: 4px;
+}
+.app-bar-left,.app-bar-right{
+	height: 55px;
+	overflow: hidden;
+	vertical-align: top;
+	display: inline-block;
+}
+.app-bar-left .iconfont{
+	font-size: 28px;
+}
+.app-bar-right{
+	position: absolute;
+	top: 2px;
+	right:0;
+} 
+.app-bar-right .iconfont{
+	font-size: 22px;
+}
+
+/*
+ *  app-banner 组件样式 
+ * 
+ */
+.app-banner{
+	position: relative;
+	height: 280px;
+}
+
+/*
+ *  app-list  组件样式
+ * 
+ */
+.row {
+	overflow: hidden;
+	display: flex;
+	background: #fff;
+	border-radius: 5px;
+	box-shadow: 0 2px 2px 0px rgba(0, 0, 0, 0.1);
+	height: 95px;
+	padding: 15px 13px 10px 13px;
+	margin-bottom: 8px;
+	position: relative;
+}
+.row .title {
+	color: #242424;
+	flex: 1;
+	font-size: 18px;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+}
+.row .img {
+	margin-left: 5px;
+	height: 70px;
+	width: 75px;
+}
+

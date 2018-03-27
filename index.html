@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>首页</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="js/swiper-4.1.0.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+	</head>
+	<body>
+		<div id="app">
+			<!--导航栏-->
+			<app-nav>
+				<!--使用插槽分发内容-->
+				<span class="iconfont icon-menu" @click="openMenu" slot="left"></span>
+				<span class="app-bar-title" slot="left">{{tapTitle}}</span>
+				<span class="iconfont icon-lingdang" @click="message" slot="right"></span>
+				<span class="iconfont icon-gengduo" @click="showMore" slot="right"></span>
+				<div class="more-options" v-show='moreSwitch' slot="right">
+					<p>夜间模式</p>
+					<p>设置选项</p>
+				</div>
+			</app-nav>
+			<!--轮播图-->
+			<app-banner class="swiper-container">
+				<div class="swiper-wrapper">
+					<div :style="`background-image:url('${item.image}')`" v-for="(item,index) in top_items" class="swiper-slide  myswiper-img" @click="openDetails($event,item.id,index)">
+						<p class="img-title ">{{item.title}}</p>
+					</div>
+				</div>
+				<!-- 分页器 -->
+				<div class="swiper-pagination"></div>
+				<!--分页选择器-->
+				<div class="app-slider-transition-action" v-show="swiperInitSwitch"></div>
+			</app-banner>
+			<!--文章列表-->
+			<div class="messages-wrapper" v-for="items in list_items" :key="items.date">
+				<p class="date">{{formatDate(items.date)}}</p>
+				<!--传递参数给组件 并绑定原生事件-->
+				<app-list :message="item" v-for="(item,index) in items.stories" @click.native="openDetails($event,item.id,index)"></app-list>
+			</div>
+			<!--遮罩层-->
+			<div class="app-mask" v-show="maskSwitch" @click="maskClick"></div>
+		</div>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/swiper-4.1.0.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="js/index.js"></script>
+	</body>
+
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>日报详情</title>
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../css/news.css" />
+		<style>
+			.icon-fenxiang,
+			.icon-xingxing {
+				margin-right: 20px;
+			}
+			.icon-dianzan {
+				-webkit-text-stroke: 1px #fff;
+			}
+			.count {
+				padding-right: 10px;
+				font-size: 14px;
+			}
+			.detail-wrapper {
+				width: 100%;
+				height: 200px;
+				background-position: center center;
+				background-repeat: no-repeat;
+				background-size: cover;
+				position: fixed;
+				top: 55px;
+				left: 0;
+				z-index: 1;
+				opacity: 0;
+			}
+			.detail-wrapper:after {
+				content: '';
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				opacity: 0.7;
+				background-image: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+				z-index: 5;
+			}
+			.detail-content {
+				width: 100%;
+				position: absolute;
+				z-index: 20;
+			}
+			
+			.detail-content p {
+				color: #38383a;
+				font-size: 18px;
+			}
+			.title {
+				margin: 0 30px 18px 18px !important;
+				position: absolute;
+				left: 0;
+				z-index: 10;
+				bottom: 10px;
+				color: #fff;
+				line-height: 1.3;
+				font-size: 22px;
+				text-shadow: rgba(0, 0, 0, 0.6) 0 0 2px;
+			}
+			.image_source {
+				z-index: 10;
+				position: absolute;
+				right: 15px;
+				bottom: 5px;
+				font-size: 10px;
+				color: #eeeeee;
+			}
+			/*重置部分样式*/
+			
+			.content-inner,
+			.headline-background {
+				background: #f9f9f9;
+			}
+			
+			.headline {
+				border-bottom: none;
+				margin-top: 10px;
+			}
+			
+			.content-wrap {
+				background: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="detail">
+			<app-nav>
+				<!--返回按钮-->
+				<span class="mui-action-back iconfont icon-fanhui" slot="left"></span>
+				<!--分享按钮-->
+				<span class="iconfont icon-fenxiang" id="share" slot="right"></span>
+				<!--收藏按钮-->
+				<span class="iconfont icon-xingxing" @click="collection_change($event)" slot="right"></span>
+				<!--评论消息-->
+				<span class="count" @click="open_comment" slot="right"><i class="iconfont icon-xiaoxi " ></i>{{extra?extra.comments:' ...'}}</span>
+				<!--点赞按钮-->
+				<span class="count" slot="right"><i class="iconfont icon-dianzan "  @click="dianzan_change($event)" > </i>{{extra?extra.popularity:' ...'}}</span>
+			</app-nav>
+			<!--日报内容容器-->
+			<div class="mui-content">
+				<!--banner图-->
+				<div class="detail-wrapper" ref="banner">
+					<!--日报标题-->
+					<p class="title">{{content.title}}</p>
+					<!--图片来源-->
+					<span class="image_source">{{content.image_source}}</span>
+				</div>
+				<!--日报主体内容-->
+				<div class="detail-content" v-html="body"></div>
+			</div>
+		</div>
+		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			//Vue 初始化
+			var vm = new Vue({
+				el: '#detail',
+				data: {
+					//日报ID
+					id: '',
+					//日报顶部内容
+					content: '',
+					//日报附加内容
+					extra: '',
+					//日报主体内容
+					body: '',
+					//日报分享地址
+					src: '',
+					//点赞开关
+					dianzan_switch: false,
+					//收藏按钮开关
+					collection_switch: false
+				},
+				methods: {
+					//点赞按钮 
+					dianzan_change: function(event) {
+						if(!this.dianzan_switch) {
+							this.extra.popularity += 1
+							event.target.style.color = 'orange';
+							this.dianzan_switch = true;
+						} else {
+							this.extra.popularity -= 1;
+							event.target.style.color = 'white';
+							this.dianzan_switch = false;
+						}
+					},
+					//收藏按钮
+					collection_change: function(event) {
+						if(!this.collection_switch) {
+							event.target.style.color = 'yellow';
+							this.collection_switch = true;
+						} else {
+							event.target.style.color = 'white';
+							this.collection_switch = false;
+						}
+					},
+					open_comment: function() {
+						mui.openWindow({
+							id: 'comment'
+						});
+						var commentPage = plus.webview.getWebviewById('comment');
+						mui.fire(commentPage, 'open_comment', {
+							id: vm.id,
+							extra: vm.extra
+						});
+					}
+				}
+			});
+
+			// mui 初始化
+			mui.init({
+				beforeback: function() {
+					clearAllData();
+					//返回true，继续页面关闭逻辑
+					return true;
+				},
+				swipeBack: true, //启用右滑关闭功能
+				//预加载
+				preloadPages: [{
+					url: 'comment.html',
+					id: 'comment' //默认使用当前页面的url作为id
+				}]
+			});
+			/*
+			 * 关闭窗口时清空数据
+			 */
+			function clearAllData() {
+				//延迟清空数据，避免瞬间白屏
+				setTimeout(function() {
+					//清空数据
+					vm.content = '';
+					vm.extra = '';
+					vm.body = '';
+					vm.src = '';
+					document.getElementsByClassName('detail-wrapper')[0].setAttribute('style', '');
+					window.scrollTo(0, 0); //重置滚动条位置
+				}, 300)
+			}
+
+			/******************** 日报文章内容初始化  ****************************/
+
+			/*  通过监听自定义事件，获取日报详情ID
+			 *  TODO ：文章内容会无法获取，重新打开即可解决（偶发性）
+			 */
+			document.addEventListener('open_detail', function(event) {
+				var data = event.detail;
+				if(!data) {
+					return;
+				}
+				vm.id = data.id;
+				//获取日报详情
+				getArticle(data.id, 3000, getBodySuccess, getExtraSuccess);
+			});
+
+			/*
+			 *  获取指定日报ID的详细内容
+			 * 
+			 *  @param {Num} id 文章的ID
+			 *  @param {Num} time  请求超时时间
+			 *  @param {Function} fn1  文章内容请求成功回调函数
+			 *  @param {Function} fn2  文章额外信息请求成功回调函数
+			 */
+			function getArticle(id, time, callback1, callback2) {
+				//获取日报详细内容
+				mui.ajax('https://news-at.zhihu.com/api/4/news/' + id, {
+					type: 'GET',
+					dataType: 'json',
+					timeout: time,
+					success: function(rsp) {
+						callback1(rsp)
+					},
+					error: function(xhr, type, errorThrown) {
+						//弹出系统提示窗
+						mui.toast('获取内容失败');
+					}
+				});
+				/* 获取日报对应的额外信息,在请求中添加随机数，避免被缓存。
+				 * 包含：点赞数，长评总数，短评总数，评论总数
+				 */
+				mui.ajax('https://news-at.zhihu.com/api/4/story-extra/' + id + '?' + Math.random() * 1000, {
+					type: 'GET',
+					dataType: 'json',
+					timeout: time,
+					success: function(rsp) {
+						callback2(rsp)
+					},
+					error: function(xhr, type, errorThrown) {
+						mui.toast('获取评论失败');
+					}
+				});
+			}
+			/*
+			 *   获取文章额外信息成功回调函数 
+			 * 
+			 *   @param  {Obj}   rsp  接受请求响应的数据
+			 */
+			function getExtraSuccess(rsp) {
+				vm.extra = rsp;
+			}
+			/*
+			 *   获取日报内容成功回调函数
+			 * 
+			 * 	@param  {Obj}   rsp  接受请求响应的数据
+			 */
+			function getBodySuccess(rsp) {
+				/*  
+				 *  功能描述：
+				 * 		调整加载顺序，等待banner图加载完成后，再加载余下内容。
+				 */
+				loadImage(rsp.image, function() {
+					var el = vm.$refs.banner;
+					el.setAttribute("style", "background-image:url('" + this.src + "')");
+					el.style.opacity = 1;
+					setTimeout(function() {
+						vm.body = rsp.body;
+					}, 80)
+				});
+				vm.content = rsp;
+				vm.src = rsp.share_url;
+			}
+			/*  图片加载
+			 *  
+			 *  @param {String} url  图片url地址
+			 *  @param {Function} callback  图片加载完成回调函数
+			 */
+			function loadImage(url, callback) {
+				var img = new Image();
+				img.src = url;
+				img.onload = function() {
+					callback.call(img);
+				}
+			}
+
+			/************************ 导航条滚动事件    ****************************/
+
+			var dom = document.getElementsByClassName('detail-wrapper')[0];
+			var bar = document.getElementsByClassName('app-bar')[0];
+
+			/*  
+			 * 功能描述：
+			 * 	  当滚动条处于banner高度区间时，使标题栏渐隐与渐显。
+			 * 
+			 */
+			document.onscroll = function() {
+				var height = document.body.scrollTop;
+				if(height <= 250) { //banner+bar高度
+					var top = parseInt(50 - height / 2) + 'px';
+					dom.style.top = top;
+					var num = ((10 - height / (200 / 10)) / 10).toFixed(2);
+					bar.style.display = 'block';
+					if(num <= 0.1) {
+						bar.style.opacity = 0;
+					} else {
+						bar.style.opacity = num;
+					}
+				}
+			}
+			//						bar.style.opacity = 1;
+			//						bar.style.display = 'block';
+
+			/************************** 标题栏按钮点击事件  ******************************/
+
+			/*  分享按钮点击事件
+			 *   
+			 *  功能描述：
+			 * 		调用安卓原生分享模块，实现分享功能
+			 * 
+			 * 	Ps:如已有appsecert，也可以使用mui的分享组件 
+			 *     详情：http://ask.dcloud.net.cn/article/36
+			 * 
+			 */
+			var Intent = null,
+				main = null;
+			// H5 plus事件处理
+			mui.plusReady(function() {
+				Intent = plus.android.importClass("android.content.Intent");
+				main = plus.android.runtimeMainActivity();
+				openbrowser()
+			});
+			document.getElementById("share").addEventListener('click', function(event) {
+				event.stopPropagation();
+				var intent = new Intent(Intent.ACTION_SEND);
+				intent.setType("text/plain");
+				//填写需要分享的文本内容
+				intent.putExtra(Intent.EXTRA_TEXT, vm.src);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				main.startActivity(Intent.createChooser(intent, "系统分享"));
+			});
+			/*
+			 *  拦截url跳转请求，调用系统浏览器
+			 * 
+			 */
+			function openbrowser() {
+				var current = plus.webview.currentWebview();
+				current.overrideUrlLoading({
+					mode: 'reject'
+				}, function(e) {
+					plus.runtime.openURL(e.url);
+				})
+			}
+		</script>
+
+	</body>
+
+</html>
