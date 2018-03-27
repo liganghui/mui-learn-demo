@@ -21,7 +21,6 @@ body {
 }
 .app-bar-left,.app-bar-right{
 	height: 55px;
-	overflow: hidden;
 	vertical-align: top;
 	display: inline-block;
 }
@@ -75,4 +74,15 @@ body {
 	height: 70px;
 	width: 75px;
 }
-
+.row  .multipic{
+    padding-right: 4px;
+    text-align: right;
+    position: absolute;
+    bottom: 10px;
+    right: 13px;
+    width: 12%;
+    height: 17px;
+    font-size: 10px;
+    background: rgba(45, 44, 44, 0.8);
+    color: #fff;
+}

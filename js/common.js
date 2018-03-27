@@ -10,5 +10,5 @@ Vue.component('appBanner', {
 Vue.component('appList', {
 	// 声明 props
 	props: ['message'],
-	template: "<div class='row'><p class='title'>{{message.title}}</p><img :src='message.images' class='img'></div>"
+	template: "<div class='row'><p class='title'>{{message.title}}</p><i v-if='message.multipic' class='multipic iconfont icon-iconset0145'> 多图</i><img :src='message.images' class='img'></div>"
 })

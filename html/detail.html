@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
@@ -13,16 +14,19 @@
 			.icon-xingxing {
 				margin-right: 20px;
 			}
+			
 			.icon-dianzan {
 				-webkit-text-stroke: 1px #fff;
 			}
+			
 			.count {
 				padding-right: 10px;
 				font-size: 14px;
 			}
+			
 			.detail-wrapper {
 				width: 100%;
-				height: 200px;
+				height: 215px;
 				background-position: center center;
 				background-repeat: no-repeat;
 				background-size: cover;
@@ -32,6 +36,7 @@
 				z-index: 1;
 				opacity: 0;
 			}
+			
 			.detail-wrapper:after {
 				content: '';
 				position: absolute;
@@ -48,7 +53,6 @@
 				position: absolute;
 				z-index: 20;
 			}
-			
 			.detail-content p {
 				color: #38383a;
 				font-size: 18px;
@@ -73,15 +77,16 @@
 				color: #eeeeee;
 			}
 			/*重置部分样式*/
-			
+
 			.content-inner,
 			.headline-background {
 				background: #f9f9f9;
 			}
 			
 			.headline {
+				height: 215px;
 				border-bottom: none;
-				margin-top: 10px;
+				margin-top: 55px;
 			}
 			
 			.content-wrap {
@@ -89,6 +94,7 @@
 			}
 		</style>
 	</head>
+
 	<body>
 		<div id="detail">
 			<app-nav>
@@ -103,18 +109,15 @@
 				<!--点赞按钮-->
 				<span class="count" slot="right"><i class="iconfont icon-dianzan "  @click="dianzan_change($event)" > </i>{{extra?extra.popularity:' ...'}}</span>
 			</app-nav>
-			<!--日报内容容器-->
-			<div class="mui-content">
-				<!--banner图-->
-				<div class="detail-wrapper" ref="banner">
-					<!--日报标题-->
-					<p class="title">{{content.title}}</p>
-					<!--图片来源-->
-					<span class="image_source">{{content.image_source}}</span>
-				</div>
-				<!--日报主体内容-->
-				<div class="detail-content" v-html="body"></div>
+			<!--banner图-->
+			<div class="detail-wrapper" ref="banner">
+				<!--日报标题-->
+				<p class="title">{{content.title}}</p>
+				<!--图片来源-->
+				<span class="image_source">{{content.image_source}}</span>
 			</div>
+			<!--日报主体内容-->
+			<div class="detail-content" v-html="body"></div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
@@ -312,7 +315,7 @@
 			document.onscroll = function() {
 				var height = document.body.scrollTop;
 				if(height <= 250) { //banner+bar高度
-					var top = parseInt(50 - height / 2) + 'px';
+					var top = parseInt(55 - height / 2) + 'px';
 					dom.style.top = top;
 					var num = ((10 - height / (200 / 10)) / 10).toFixed(2);
 					bar.style.display = 'block';
