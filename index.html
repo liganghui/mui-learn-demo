@@ -6,7 +6,8 @@
 		<title>首页</title>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
-		<link rel="stylesheet" type="text/css" href="js/swiper-4.1.0.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont-2.css" />
+		<link rel="stylesheet" type="text/css" href="css/swiper-4.1.0.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/common.css" />
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
 	</head>
@@ -34,7 +35,7 @@
 				<!-- 分页器 -->
 				<div class="swiper-pagination"></div>
 				<!--分页选择器-->
-				<div class="app-slider-transition-action" v-show="swiperInitSwitch"></div>
+				<div class="app-slider-transition-action" v-show="top_items.length>0"></div>
 			</app-banner>
 			<!--文章列表-->
 			<div class="messages-wrapper" v-for="items in list_items" :key="items.date">
