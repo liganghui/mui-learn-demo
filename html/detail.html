@@ -10,15 +10,13 @@
 		<link rel="stylesheet" type="text/css" href="../css/common.css" />
 		<link rel="stylesheet" type="text/css" href="../css/news.css" />
 		<style>
+			.icon-dianzan {
+				-webkit-text-stroke: 1px #fff;
+			}
 			.icon-fenxiang,
 			.icon-xingxing {
 				margin-right: 20px;
 			}
-			
-			.icon-dianzan {
-				-webkit-text-stroke: 1px #fff;
-			}
-			
 			.count {
 				padding-right: 10px;
 				font-size: 14px;
@@ -36,7 +34,6 @@
 				z-index: 1;
 				opacity: 0;
 			}
-			
 			.detail-wrapper:after {
 				content: '';
 				position: absolute;
@@ -53,10 +50,12 @@
 				position: absolute;
 				z-index: 20;
 			}
+			
 			.detail-content p {
 				color: #38383a;
 				font-size: 18px;
 			}
+			
 			.title {
 				margin: 0 30px 18px 18px !important;
 				position: absolute;
@@ -68,6 +67,7 @@
 				font-size: 22px;
 				text-shadow: rgba(0, 0, 0, 0.6) 0 0 2px;
 			}
+			
 			.image_source {
 				z-index: 10;
 				position: absolute;
@@ -76,18 +76,18 @@
 				font-size: 10px;
 				color: #eeeeee;
 			}
-			/*重置部分样式*/
-
+			/*重置部分news.css样式*/
 			.content-inner,
 			.headline-background {
 				background: #f9f9f9;
 			}
 			
-			.headline {
-				height: 215px;
+			.img-place-holder {
+				height: 270px !important;
 				border-bottom: none;
-				margin-top: 55px;
 			}
+			
+			.question-title {}
 			
 			.content-wrap {
 				background: none;
@@ -103,11 +103,11 @@
 				<!--分享按钮-->
 				<span class="iconfont icon-fenxiang" id="share" slot="right"></span>
 				<!--收藏按钮-->
-				<span class="iconfont icon-xingxing" @click="collection_change($event)" slot="right"></span>
+				<span class="iconfont icon-xingxing" @click="collection_change" ref="collection" slot="right"></span>
 				<!--评论消息-->
 				<span class="count" @click="open_comment" slot="right"><i class="iconfont icon-xiaoxi " ></i>{{extra?extra.comments:' ...'}}</span>
 				<!--点赞按钮-->
-				<span class="count" slot="right"><i class="iconfont icon-dianzan "  @click="dianzan_change($event)" > </i>{{extra?extra.popularity:' ...'}}</span>
+				<span class="count" slot="right"><i class="iconfont icon-dianzan "  ref="like"  @click="like_change"> </i>{{extra?extra.popularity:' ...'}}</span>
 			</app-nav>
 			<!--banner图-->
 			<div class="detail-wrapper" ref="banner">
@@ -123,7 +123,7 @@
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/common.js" type="text/javascript" charset="utf-8"></script>
 		<script>
-			//Vue 初始化
+			//***********************Vue 初始化**********************8
 			var vm = new Vue({
 				el: '#detail',
 				data: {
@@ -138,32 +138,45 @@
 					//日报分享地址
 					src: '',
 					//点赞开关
-					dianzan_switch: false,
+					like_switch: false,
 					//收藏按钮开关
 					collection_switch: false
 				},
-				methods: {
-					//点赞按钮 
-					dianzan_change: function(event) {
-						if(!this.dianzan_switch) {
+				created() {
+					//记录初始值，用于清空数据
+					this.defaultData = JSON.parse(JSON.stringify(this.$data));
+				},
+				watch: {
+					like_switch: function(new_value, old_value) {
+						console.log("点赞改变！");
+						if(new_value) {
+							plus.storage.setItem(this.id + "_like", "true");
 							this.extra.popularity += 1
-							event.target.style.color = 'orange';
-							this.dianzan_switch = true;
+							this.$refs.like.style.color = 'orange';
 						} else {
+							plus.storage.removeItem(this.id + "_like");
 							this.extra.popularity -= 1;
-							event.target.style.color = 'white';
-							this.dianzan_switch = false;
+							this.$refs.like.style.color = 'white';
 						}
 					},
-					//收藏按钮
-					collection_change: function(event) {
-						if(!this.collection_switch) {
-							event.target.style.color = 'yellow';
-							this.collection_switch = true;
+					collection_switch: function(new_value, old_value) {
+						console.log("收藏改变")
+						if(new_value) {
+							plus.storage.setItem(this.id + "_collection", "true");
+							this.$refs.collection.style.color = 'yellow';
 						} else {
-							event.target.style.color = 'white';
-							this.collection_switch = false;
+							plus.storage.removeItem(this.id + "_collection");
+							this.$refs.collection.style.color = 'white';
 						}
+					},
+				},
+				methods: {
+					collection_change: function() {
+						console.log("收藏触发")
+						this.collection_switch = !this.collection_switch;
+					},
+					like_change: function() {
+						this.like_switch = !this.like_switch;
 					},
 					open_comment: function() {
 						mui.openWindow({
@@ -174,7 +187,11 @@
 							id: vm.id,
 							extra: vm.extra
 						});
+					},
+					reset_data: function() {
+						this.$data = Object.assign(this.$data, this.defaultData);
 					}
+
 				}
 			});
 
@@ -192,18 +209,17 @@
 					id: 'comment' //默认使用当前页面的url作为id
 				}]
 			});
+			//全局变量
+			var banner_el = vm.$refs.banner;
+
 			/*
 			 * 关闭窗口时清空数据
 			 */
 			function clearAllData() {
 				//延迟清空数据，避免瞬间白屏
 				setTimeout(function() {
-					//清空数据
-					vm.content = '';
-					vm.extra = '';
-					vm.body = '';
-					vm.src = '';
-					document.getElementsByClassName('detail-wrapper')[0].setAttribute('style', '');
+					vm.reset_data();
+					banner_el.setAttribute('style', '');
 					window.scrollTo(0, 0); //重置滚动条位置
 				}, 300)
 			}
@@ -221,6 +237,8 @@
 				vm.id = data.id;
 				//获取日报详情
 				getArticle(data.id, 3000, getBodySuccess, getExtraSuccess);
+				//更新
+
 			});
 
 			/*
@@ -267,7 +285,9 @@
 			 */
 			function getExtraSuccess(rsp) {
 				vm.extra = rsp;
+				setExtraState();
 			}
+
 			/*
 			 *   获取日报内容成功回调函数
 			 * 
@@ -279,12 +299,11 @@
 				 * 		调整加载顺序，等待banner图加载完成后，再加载余下内容。
 				 */
 				loadImage(rsp.image, function() {
-					var el = vm.$refs.banner;
-					el.setAttribute("style", "background-image:url('" + this.src + "')");
-					el.style.opacity = 1;
+					banner_el.setAttribute("style", "background-image:url('" + this.src + "')");
+					banner_el.style.opacity = 1;
 					setTimeout(function() {
 						vm.body = rsp.body;
-					}, 80)
+					}, 50)
 				});
 				vm.content = rsp;
 				vm.src = rsp.share_url;
@@ -306,7 +325,6 @@
 
 			var dom = document.getElementsByClassName('detail-wrapper')[0];
 			var bar = document.getElementsByClassName('app-bar')[0];
-
 			/*  
 			 * 功能描述：
 			 * 	  当滚动条处于banner高度区间时，使标题栏渐隐与渐显。
@@ -346,7 +364,8 @@
 			mui.plusReady(function() {
 				Intent = plus.android.importClass("android.content.Intent");
 				main = plus.android.runtimeMainActivity();
-				openbrowser()
+				openbrowser();
+
 			});
 			document.getElementById("share").addEventListener('click', function(event) {
 				event.stopPropagation();
@@ -358,7 +377,7 @@
 				main.startActivity(Intent.createChooser(intent, "系统分享"));
 			});
 			/*
-			 *  拦截url跳转请求，调用系统浏览器
+			 *  @description 拦截url跳转请求，调用系统浏览器
 			 * 
 			 */
 			function openbrowser() {
@@ -368,6 +387,22 @@
 				}, function(e) {
 					plus.runtime.openURL(e.url);
 				})
+			}
+			/*
+			 * @description 读取收藏与点赞数据，更新页面状态
+			 * 
+			 */
+			function setExtraState() {
+				var like = plus.storage.getItem(vm.id + "_like");
+				var collection = plus.storage.getItem(vm.id + "_collection");
+				console.log(like);
+				console.log(collection);
+				if(like) {
+					vm.like_switch = true
+				}
+				if(collection) {
+					vm.collection_switch = true
+				}
 			}
 		</script>
 

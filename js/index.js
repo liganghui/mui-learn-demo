@@ -81,7 +81,7 @@ var news = new Vue({
 					bulletClass: 'app-swiper-bullet' //设定分页指示器（小点）的HTML标签。
 				}
 			})
-			/*   @description  监听滑块移动事件，如果触发slider向后或向前切换则执行。
+			/*   @description  监听轮播图移动事件，如果触发slider向后或向前切换则执行。
 			 * 	 
 			 *   切换时同时调整分页指示器的位置，使分页指示器跟随切换位置。
 			 * 
@@ -101,7 +101,6 @@ var news = new Vue({
 						}
 					}, 10);
 				} else {
-					// 计算公式等于：an=a1+（n-1）d
 					//因index 从0开始，所以需再加1
 					var start = -60 + 20 * index;
 					var offset = -60 + 20 * (index + 1);
@@ -193,11 +192,11 @@ var news = new Vue({
 		list_items: function(newList, oldList) {
 			//等待dom 绘制
 			setTimeout(function() {
-				var dailyList = document.querySelectorAll('#app');
+				var dailyList = document.querySelectorAll('.messages-wrapper');
 				var tmp = [];
 				var height = 0;
 				tmp.push(height);
-				for(var i = 0; i < dailyList.length; i++) {
+				for(var i = 0; i < dailyList.length;i++) {
 					var item = dailyList[i];
 					height += item.clientHeight;
 					tmp.push(height);
@@ -272,7 +271,6 @@ function pulldownRefresh() {
 	mui.getJSON("https://news-at.zhihu.com/api/4/news/latest", {}, function(rsp) {
 		mui('#app').pullRefresh().endPulldown();
 		//判断内容是否已存在
-		console.log(news.list_items.length);
 		if(news.list_items.length>0) {
 			//判断当天内容是否已存在
 			if(rsp.date === news.list_items[0].date) {
@@ -321,6 +319,7 @@ function pullupfresh() {
 window.onscroll = function() {
 	//关闭遮罩
 	news.maskClick();
+	//减去banner+标题栏的高度
 	var top = document.body.scrollTop - 225;
 	if(top < 0) {
 		news.tapTitle = '首页'
