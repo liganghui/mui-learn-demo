@@ -70,6 +70,7 @@ body {
 	-webkit-box-orient: vertical;
 }
 .row .img {
+	background-size: 100% 100%;
 	margin-left: 5px;
 	height: 70px;
 	width: 75px;

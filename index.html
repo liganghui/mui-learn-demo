@@ -10,6 +10,7 @@
 		<link rel="stylesheet" type="text/css" href="css/swiper-4.1.0.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/common.css" />
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
+		<link rel="stylesheet" type="text/css" href="css/imgload.css"/>
 	</head>
 	<body>
 		<div id="app">
@@ -41,7 +42,7 @@
 			<div class="messages-wrapper" v-for="items in list_items" :key="items.date">
 				<p class="date">{{formatDate(items.date)}}</p>
 				<!--传递参数给组件 并绑定原生事件-->
-				<app-list :message="item" v-for="(item,index) in items.stories" @click.native="openDetails($event,item.id,index)"></app-list>
+				<app-list :message="item" :loadimg="'img/translate.png'" v-for="(item,index) in items.stories" @click.native="openDetails($event,item.id,index)"></app-list>
 			</div>
 			<!--遮罩层-->
 			<div class="app-mask" v-show="maskSwitch" @click="maskClick"></div>
@@ -50,6 +51,8 @@
 		<script src="js/swiper-4.1.0.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/md5.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/imgload.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="js/index.js"></script>
 	</body>
 

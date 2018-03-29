@@ -1,0 +1,36 @@
+/*图片等比例缩放,占满宽高,取中间显示*/
+
+.img_cover {
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+/*等比例缩放,宽高至少占满一边,显示全部*/
+
+.img_contain {
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+/*透明动画*/
+
+.anim_opacity {
+	animation: anim_opacity 0.3s;
+	-webkit-animation: anim_opacity 0.3s;
+}
+@keyframes anim_opacity {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+@-webkit-keyframes anim_opacity {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}

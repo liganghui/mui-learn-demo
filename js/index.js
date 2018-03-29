@@ -1,5 +1,3 @@
-
-
 var news = new Vue({
 	el: '#app',
 	data: {
@@ -13,6 +11,24 @@ var news = new Vue({
 		maskSwitch: false //遮罩层开关
 	},
 	methods: {
+		/*
+		 *  @description  接受JSON数据对象，展现到页面
+		 *  @param {Obj} json 需要展现的JSON对象
+		 */
+		showData: function(obj) {
+			//将列表数据以 日期+列表数据  方式保存
+			var data = {};
+			//列表数据
+			data.stories = obj.stories;
+			//日期
+			data.date = obj.date;
+			//添加到数组中
+			news.list_items.push(data);
+			//记录当前数据的日期
+			news.dateParam = obj.date;
+			//轮播图数据
+			news.top_items = obj.top_stories;
+		},
 		/* 
 		 *   @description  用于格式化时间字符串 
 		 *   @example  
@@ -196,7 +212,7 @@ var news = new Vue({
 				var tmp = [];
 				var height = 0;
 				tmp.push(height);
-				for(var i = 0; i < dailyList.length;i++) {
+				for(var i = 0; i < dailyList.length; i++) {
 					var item = dailyList[i];
 					height += item.clientHeight;
 					tmp.push(height);
@@ -222,7 +238,7 @@ mui.init({
 		down: {
 			style: 'circle',
 			offset: '55px',
-			auto: true,
+			auto: false,
 			callback: pulldownRefresh
 		},
 		up: {
@@ -240,19 +256,18 @@ mui.init({
 			/*  窗口的缓存模式：只要存在缓存（即使过期）数据则使用，否则从网络获取
 			 *  详细说明：http://www.html5plus.org/doc/zh_cn/webview.html#plus.webview.WebviewStyles
 			 */
-			'cachemode':'cacheElseNetwork',
+			'cachemode': 'cacheElseNetwork',
 			/* 窗口的侧滑返回功能
 			 * 详细说明：http://ask.dcloud.net.cn/question/8071
 			 * 			http://www.html5plus.org/doc/zh_cn/webview.html
 			 */
-			"popGesture":"hide",
+			"popGesture": "hide",
 		}
 	}, {
 		"url": 'html/menu.html',
 		"id": 'menu',
 		"styles": {
-
-			'cachemode': 'cacheElseNetwork',
+			//			'cachemode': 'cacheElseNetwork',
 			"width": '80%' //新页面宽度，默认为100%
 
 		}
@@ -269,38 +284,55 @@ function pulldownRefresh() {
 	}
 	//请求列表信息流
 	mui.getJSON("https://news-at.zhihu.com/api/4/news/latest", {}, function(rsp) {
+		//json 对象转为字符串并存储数据
+		var st = JSON.stringify(rsp);
+		plus.storage.setItem(rsp.date, st);
+		//记录最新数据的日期
+		plus.storage.setItem("latestData", rsp.date);
+		//关闭动画
 		mui('#app').pullRefresh().endPulldown();
-		//判断内容是否已存在
-		if(news.list_items.length>0) {
-			//判断当天内容是否已存在
-			if(rsp.date === news.list_items[0].date) {
-				//记录列表第一项的ID
-				var firstItemID = news.list_items[0].stories[0].id;
-				//判断内容是否有更新
-				if(firstItemID === rsp.stories[0].id) {
-					console.log("wugongxin ")
-					return false;
-				} else {
-					//遍历数组，追加新数据
-					rsp.stories.every(function(val, index) {
-						//检测当前项是否已存在
-						if(val.id !== firstItemID) {
-							news.list_items.unshift(val);
-						}
-					})
-				}
-			}
+		//记录返回值,确定是否需要更新数据
+		var val= monitoringDataUpdate(rsp);
+		if(!val){
+			return false;
 		}
-		var data = {}; //存储临时数据
-		data.stories = rsp.stories;
-		data.date = rsp.date;
-		news.dateParam = rsp.date;
-		news.list_items.push(data);
-		news.top_items = rsp.top_stories;
+		//展现数据
+		news.showData(rsp)
 	});
 }
+/*
+ *  
+ *  @description 监听数据对象，是否更新数据
+ * 
+ *  @param  {Object}  obj  ajax响应的json对象 
+ *  @return  {true||false}   true=需要更新页面  false=不需要更新
+ * 
+ */
+function monitoringDataUpdate(obj) {
+	//判断内容是否已存在
+	if(news.list_items.length > 0) {
+		//判断当天内容是否已存在
+		if(obj.date === news.list_items[0].date) {
+			//记录列表第一项的ID
+			var firstItemID = news.list_items[0].stories[0].id;
+			//判断内容是否有更新
+			if(firstItemID === obj.stories[0].id) {
+				return false;
+			} else {
+				//遍历数组，追加新数据
+				obj.stories.every(function(val, index) {
+					//检测当前项是否已存在
+					if(val.id !== firstItemID) {
+						news.list_items.unshift(val);
+					}
+				})
+			}
+		}
+	}
+	return true;
+}
 
-//上拉刷新
+//上拉刷新 
 function pullupfresh() {
 	mui.getJSON("https://news-at.zhihu.com/api/4/news/before/" + news.dateParam, {}, function(rsp) {
 		var data = {}; //存储临时数据
@@ -311,8 +343,6 @@ function pullupfresh() {
 		mui('#app').pullRefresh().endPullupToRefresh(false);
 	});
 }
-
-
 
 /*******************	事件监听    *************************/
 
@@ -352,5 +382,19 @@ function plusReady() {
 	// 设置系统状态栏背景色
 	plus.navigator.setStatusBarBackground('#1976d2');
 	plus.navigator.setStatusBarStyle('light');
+	init();
 }
 
+/*
+ *  @description  尝试从本地存储中读取离线数据，绘制到页面中。 
+ * 
+ */
+
+function init() {
+	//获取最新数据的日期
+    var latestData=plus.storage.getItem("latestData");
+	//获取最新的数据并转换为json 对象
+	var json_data = JSON.parse(plus.storage.getItem(latestData));
+	//展示数据
+	news.showData(json_data);
+}
