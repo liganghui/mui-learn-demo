@@ -4,11 +4,18 @@
       "html/menu.html",
       "html/browser.html",
       "html/detail.html"
-    ]
+    ],
+    "resources": []
   },
   "html/detail.html": {
     "refer": [
       "html/comment.html"
+    ],
+    "resources": []
+  },
+  "html/menu.html": {
+    "refer": [
+      "html/collection.html"
     ]
   }
 }
