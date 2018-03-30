@@ -88,7 +88,7 @@ var news = new Vue({
 					delay: 5000, //自动切换的时间间隔，单位ms
 					disableOnInteraction: false //用户操作swiper之后，是否禁止autoplay。默认为true：停止。
 				},
-				speed: 600, //切换速度，即slider自动滑动开始到结束的时间（单位ms）
+				speed: 250, //切换速度，即slider自动滑动开始到结束的时间（单位ms）
 				direction: 'horizontal', //Slides的滑动方向，可设置水平(horizontal)或垂直(vertical)。
 				loop: true, //是否开启loop模式 
 				//分页器
@@ -110,7 +110,7 @@ var news = new Vue({
 					var offset = -40;
 					var start = 40;
 					var id = setInterval(function() {
-						start -= 2;
+						start -= 4;
 						el.style.left = start + 'px';
 						if(start <= offset) {
 							clearInterval(id);
@@ -136,7 +136,7 @@ var news = new Vue({
 					var offset = 40;
 					var start = -40;
 					var id = setInterval(function() {
-						start += 2;
+						start += 4;
 						el.style.left = start + 'px';
 						if(start >= offset) {
 							clearInterval(id);
@@ -267,7 +267,7 @@ mui.init({
 		"url": 'html/menu.html',
 		"id": 'menu',
 		"styles": {
-			//			'cachemode': 'cacheElseNetwork',
+			'cachemode': 'cacheElseNetwork',
 			"width": '80%' //新页面宽度，默认为100%
 
 		}
@@ -284,18 +284,18 @@ function pulldownRefresh() {
 	}
 	//请求列表信息流
 	mui.getJSON("https://news-at.zhihu.com/api/4/news/latest", {}, function(rsp) {
+		//关闭动画
+		mui('#app').pullRefresh().endPulldown();
+		//记录返回值,确定是否需要更新数据
+		var val = monitoringDataUpdate(rsp);
+		if(!val) {
+			return false;
+		}
 		//json 对象转为字符串并存储数据
 		var st = JSON.stringify(rsp);
 		plus.storage.setItem(rsp.date, st);
 		//记录最新数据的日期
-		plus.storage.setItem("latestData", rsp.date);
-		//关闭动画
-		mui('#app').pullRefresh().endPulldown();
-		//记录返回值,确定是否需要更新数据
-		var val= monitoringDataUpdate(rsp);
-		if(!val){
-			return false;
-		}
+		plus.storage.setItem("latestData",rsp.date);
 		//展现数据
 		news.showData(rsp)
 	});
@@ -310,7 +310,8 @@ function pulldownRefresh() {
  */
 function monitoringDataUpdate(obj) {
 	//判断内容是否已存在
-	if(news.list_items.length > 0) {
+	console.log(news.list_items);
+	if(news.list_items.length) {
 		//判断当天内容是否已存在
 		if(obj.date === news.list_items[0].date) {
 			//记录列表第一项的ID
@@ -392,7 +393,7 @@ function plusReady() {
 
 function init() {
 	//获取最新数据的日期
-    var latestData=plus.storage.getItem("latestData");
+	var latestData = plus.storage.getItem("latestData");
 	//获取最新的数据并转换为json 对象
 	var json_data = JSON.parse(plus.storage.getItem(latestData));
 	//展示数据

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>我的收藏</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../css/imgload.css" />
+		<style>
+			.num {
+				padding-top: 3px;
+				vertical-align: top;
+				margin-left: 20px;
+				display: inline-block;
+			}
+			
+			.wrapper {
+				padding: 60px 10px 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="collection">
+			<app-nav>
+				<!--使用插槽分发内容-->
+				<span class="iconfont icon-menu" slot="left" @click="openMenu"></span>
+				<span class="num" slot="left">{{collection_data.length}} 条收藏</span>
+			</app-nav>
+			<div class="wrapper">
+				<app-list :message="item" :loadimg="'../img/translate.png'" v-for="(item,index) in collection_data" @click.native="openDetails($event,item.id,index)"></app-list>
+			</div>
+		</div>
+		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/md5.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/imgload.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			var vm = new Vue({
+				el: '#collection',
+				data: {
+					'collection_data': []
+				},
+				methods: {
+					openMenu: function() {
+						mui.openWindow({
+							id: 'menu',
+							extras: {},
+							show: {
+								aniShow: 'slide-in-left', //页面显示动画，默认为”slide-in-right“；
+								duration: 300 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+							}
+						})
+						//遮罩层显示
+						//						mask.show();
+					},
+					openDetails: function(event, id) {
+						//日报标题
+						var title = event.target.innerText;
+						//获得详情页面
+						var detailPage = plus.webview.getWebviewById('detail');
+						//打开详情页面          
+						mui.openWindow({
+							id: 'detail',
+							show: {
+								aniShow: 'pop-in', //页面显示动画，默认为”slide-in-right“；
+								duration: 280 //页面动画持续时间
+							}
+						});
+						//触发自定义事件，传递参数
+						mui.fire(detailPage, 'open_detail', {
+							id: id,
+							title: title
+						});
+					}
+				}
+			});
+			mui.init({
+				//预加载
+				preloadPages: [{
+					"url": 'menu.html',
+					"id": 'menu',
+					"styles": {
+						'cachemode': 'cacheElseNetwork',
+						"width": '80%' //新页面宽度，默认为100%
+
+					}
+				}, {
+					url: 'detail.html',
+					id: 'detail'
+				}]
+			});
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener('plusready', plusReady, false);
+			}
+
+			function plusReady() {
+				//读取数据
+				var data = JSON.parse(plus.storage.getItem("collection"));
+				vm.collection_data = data.collection;
+			}
+			//自定义事件，监听事件，关闭遮罩层
+			document.addEventListener('close_collection', function(event) {
+				mui.back()
+			});
+		</script>
+	</body>
+
+</html>

@@ -13,10 +13,12 @@
 			.icon-dianzan {
 				-webkit-text-stroke: 1px #fff;
 			}
+			
 			.icon-fenxiang,
 			.icon-xingxing {
 				margin-right: 20px;
 			}
+			
 			.count {
 				padding-right: 10px;
 				font-size: 14px;
@@ -34,6 +36,7 @@
 				z-index: 1;
 				opacity: 0;
 			}
+			
 			.detail-wrapper:after {
 				content: '';
 				position: absolute;
@@ -45,6 +48,7 @@
 				background-image: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
 				z-index: 5;
 			}
+			
 			.detail-content {
 				width: 100%;
 				position: absolute;
@@ -77,6 +81,7 @@
 				color: #eeeeee;
 			}
 			/*重置部分news.css样式*/
+			
 			.content-inner,
 			.headline-background {
 				background: #f9f9f9;
@@ -103,11 +108,11 @@
 				<!--分享按钮-->
 				<span class="iconfont icon-fenxiang" id="share" slot="right"></span>
 				<!--收藏按钮-->
-				<span class="iconfont icon-xingxing" @click="collection_change" ref="collection" slot="right"></span>
+				<span class="iconfont icon-xingxing" @click="collection_change" :style="collection_switch?'color:yellow':'color:white'" slot="right"></span>
 				<!--评论消息-->
 				<span class="count" @click="open_comment" slot="right"><i class="iconfont icon-xiaoxi " ></i>{{extra?extra.comments:' ...'}}</span>
 				<!--点赞按钮-->
-				<span class="count" slot="right"><i class="iconfont icon-dianzan "  ref="like"  @click="like_change"> </i>{{extra?extra.popularity:' ...'}}</span>
+				<span class="count" slot="right"><i class="iconfont icon-dianzan " :style="like_switch?'color:orange':'color:white'"      @click="like_change"> </i>{{extra?extra.popularity:' ...'}}</span>
 			</app-nav>
 			<!--banner图-->
 			<div class="detail-wrapper" ref="banner">
@@ -148,31 +153,60 @@
 				},
 				watch: {
 					like_switch: function(new_value, old_value) {
-						console.log("点赞改变！");
 						if(new_value) {
 							plus.storage.setItem(this.id + "_like", "true");
 							this.extra.popularity += 1
-							this.$refs.like.style.color = 'orange';
 						} else {
 							plus.storage.removeItem(this.id + "_like");
 							this.extra.popularity -= 1;
-							this.$refs.like.style.color = 'white';
 						}
 					},
 					collection_switch: function(new_value, old_value) {
-						console.log("收藏改变")
+						var collection_str = plus.storage.getItem('collection');
 						if(new_value) {
-							plus.storage.setItem(this.id + "_collection", "true");
-							this.$refs.collection.style.color = 'yellow';
-						} else {
-							plus.storage.removeItem(this.id + "_collection");
-							this.$refs.collection.style.color = 'white';
+							var tmp = {
+								'id': this.id,
+								'title': this.content.title,
+								'images': this.content.images
+							}
+							//读取本地存储中collection数据
+							if(collection_str) {
+								var collection_array = JSON.parse(collection_str);
+								//如果已存在数据，跳出
+								var quit;
+								collection_array.collection.forEach(function(el){
+									if(el.id==vm.id){
+									   quit=true
+									}
+								});
+								if(quit){
+									return false;
+								}
+								collection_array.collection.unshift(tmp);
+							} else {
+								var collection_array = {
+									'collection': [tmp]
+								};
+							}
+							var collection_josn = JSON.stringify(collection_array);
+							plus.storage.setItem('collection', collection_josn);
+						} else if(new_value === false && this.body  !== '') {
+							//读取本地存储中collection数据
+							if(collection_str) {
+								var collection_array = JSON.parse(collection_str);
+								collection_array.collection = collection_array.collection.filter(function(el) {
+									if(el.id !== vm.id) {
+										return true;
+									}
+								})
+								var collection_json = JSON.stringify(collection_array);
+								plus.storage.setItem('collection', collection_json);
+							}
 						}
 					},
 				},
 				methods: {
 					collection_change: function() {
-						console.log("收藏触发")
 						this.collection_switch = !this.collection_switch;
 					},
 					like_change: function() {
@@ -191,7 +225,6 @@
 					reset_data: function() {
 						this.$data = Object.assign(this.$data, this.defaultData);
 					}
-
 				}
 			});
 
@@ -221,6 +254,7 @@
 					vm.reset_data();
 					banner_el.setAttribute('style', '');
 					window.scrollTo(0, 0); //重置滚动条位置
+					var collection_str = plus.storage.getItem('collection');
 				}, 300)
 			}
 
@@ -237,7 +271,6 @@
 				vm.id = data.id;
 				//获取日报详情
 				getArticle(data.id, 3000, getBodySuccess, getExtraSuccess);
-				//更新
 
 			});
 
@@ -344,6 +377,7 @@
 					}
 				}
 			}
+			//TODO 上划与下滑时控制标题栏 
 			//						bar.style.opacity = 1;
 			//						bar.style.display = 'block';
 
@@ -393,15 +427,14 @@
 			 * 
 			 */
 			function setExtraState() {
-				var like = plus.storage.getItem(vm.id + "_like");
-				var collection = plus.storage.getItem(vm.id + "_collection");
-				console.log(like);
-				console.log(collection);
-				if(like) {
-					vm.like_switch = true
-				}
-				if(collection) {
-					vm.collection_switch = true
+				var collection_str = plus.storage.getItem('collection');
+				var collection_array = JSON.parse(collection_str);
+				if(collection_array) {
+					collection_array.collection.forEach(function(el, index) {
+						if(el.id == vm.id) {
+							vm.collection_switch = true;
+						}
+					})
 				}
 			}
 		</script>

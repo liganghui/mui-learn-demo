@@ -94,7 +94,7 @@
 	</head>
 
 	<body>
-		<div class="mui-content">
+		<div class="mui-content" id="menu">
 			<header>
 				<div class="user-info">
 					<div class="head-image">
@@ -105,7 +105,7 @@
 					</div>
 				</div>
 				<div class="user-download">
-					<div class="user-collect">
+					<div class="user-collect" @click="open_collection">
 						<span class="iconfont icon-xingxing"></span>
 						<span>我的收藏</span>
 					</div>
@@ -115,7 +115,7 @@
 					</div>
 				</div>
 			</header>
-			<div class="theme-list" id="menu">
+			<div class="theme-list">
 				<div class="home" @click="back_index">
 					<span class="iconfont icon-weibiaoti1"></span>
 					<span>首页</span>
@@ -139,7 +139,12 @@
 						window.scrollTo(0, 0); //重置滚动条位置
 						mui.fire(index, "close_mask", {});
 					}, 300)
-				}
+				},
+				//预加载
+				preloadPages: [{
+					url: 'collection.html',
+					id: 'collection' //默认使用当前页面的url作为id
+				}]
 			})
 			var vm = new Vue({
 				el: '#menu',
@@ -167,7 +172,20 @@
 					},
 					back_index: function() {
 						this.i = '';
+						var obj=plus.webview.getWebviewById('collection');
+						mui.fire(obj, 'close_collection', {});
 						mui.back();
+					},
+					open_collection: function() {
+						mui.back()
+						mui.openWindow({
+							id: 'collection',
+							extras: {},
+							show: {
+								aniShow: 'fade-in', //页面显示动画，默认为”slide-in-right“；
+								duration: 200 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+							}
+						})
 					}
 				}
 			})
