@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="UTF-8">
-		<title>我的收藏</title>
+		<title>主题日报</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
 		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
@@ -11,20 +11,33 @@
 		<link rel="stylesheet" type="text/css" href="../css/imgload.css" />
 		<style>
 			.wrapper {
-				padding: 60px 10px 0;
+				padding: 30px 10px 0;
+			}
+			
+			.description {
+				position: absolute;
+				left: 20px;
+				bottom: 20px;
+				padding-right: 20px;
+				font-size: 18px;
+				color: #fff;
 			}
 		</style>
 	</head>
 
 	<body>
-		<div id="collection">
+		<div id="theme">
 			<app-nav>
 				<!--使用插槽分发内容-->
 				<span class="iconfont icon-menu" slot="left" @click="openMenu"></span>
-				<span class="title" slot="left">{{collection_data.length}} 条收藏</span>
+				<span class="title" slot="left">{{theme_data.name}}</span>
 			</app-nav>
+
+			<app-banner class="banner" :onerror="load_error" :style="{background:'#3e3e3e'}">
+				<p class="description">{{theme_data.description}}</p>
+			</app-banner>
 			<div class="wrapper">
-				<app-list :message="item" :loadimg="'../img/translate.png'" v-for="(item,index) in collection_data" @click.native="openDetails($event,item.id,index)"></app-list>
+				<app-list :message="item" :loadimg="'../img/translate.png'" v-for="(item,index) in theme_data.stories" @click.native="openDetails($event,item.id,index)"></app-list>
 			</div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
@@ -32,13 +45,27 @@
 		<script src="../js/common.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/md5.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/imgload.js" type="text/javascript" charset="utf-8"></script>
-		<script>
+		<script type="text/javascript">
 			var vm = new Vue({
-				el: '#collection',
+				el: "#theme",
 				data: {
-					'collection_data': []
+					theme_data: ''
+				},
+				created() {
+					//记录初始值，用于清空数据
+					this.defaultData = JSON.parse(JSON.stringify(this.$data));
 				},
 				methods: {
+					reset_data: function() {
+						//延迟清空数据，避免瞬间白屏
+						setTimeout(function() {
+							vm.$data = Object.assign(vm.$data, vm.defaultData);
+							window.scrollTo(0, 0); //重置滚动条位置
+						}, 300)
+					},
+					load_error: function(event) {
+						event.target.style.background = "#3e3e3e";
+					},
 					openMenu: function() {
 						mui.openWindow({
 							id: 'menu',
@@ -48,10 +75,8 @@
 								duration: 300 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
 							}
 						})
-						//遮罩层显示
-						//						mask.show();
 					},
-					openDetails: function(event, id) {
+					openDetails: function(event,id) {
 						//日报标题
 						var title = event.target.innerText;
 						//获得详情页面
@@ -71,37 +96,38 @@
 						});
 					}
 				}
-			});
+			})
 			mui.init({
-				//预加载
-				preloadPages: [{
-					"url": 'menu.html',
-					"id": 'menu',
-					"styles": {
-						'cachemode': 'cacheElseNetwork',
-						"width": '80%' //新页面宽度，默认为100%
+				beforeback: function() {
+					vm.reset_data();
+					return true;
+				}
+			});
+			//自定义事件
+			document.addEventListener('themeId', function(event) {
+				var theme_id = event.detail.id;
+				getThemeList(theme_id, getThemeList)
+			});
 
+			//获取日报主题列表
+			function getThemeList(id) {
+				mui.ajax('https://news-at.zhihu.com/api/4/theme/' + id, {
+					type: 'GET',
+					dataType: 'json',
+					timeout: 5000,
+					success: function(rsp) {
+						renderList(rsp)
+					},
+					error: function(xhr, type, errorThrown) {
+						//弹出系统提示窗
+						mui.toast('获取内容失败');
 					}
-				}, {
-					url: 'detail.html',
-					id: 'detail'
-				}]
-			});
-			if(window.plus) {
-				plusReady();
-			} else {
-				document.addEventListener('plusready', plusReady, false);
+				});
 			}
-
-			function plusReady() {
-				//读取数据
-				var data = JSON.parse(plus.storage.getItem("collection"));
-				vm.collection_data = data.collection;
+			//成功回调
+			function renderList(rsp) {
+				vm.theme_data = rsp;
 			}
-			//自定义事件，监听事件，关闭遮罩层
-			document.addEventListener('close_collection', function(event) {
-				mui.back()
-			});
 		</script>
 	</body>
 

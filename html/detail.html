@@ -115,7 +115,7 @@
 				<span class="count" slot="right"><i class="iconfont icon-dianzan " :style="like_switch?'color:orange':'color:white'"      @click="like_change"> </i>{{extra?extra.popularity:' ...'}}</span>
 			</app-nav>
 			<!--banner图-->
-			<div class="detail-wrapper" ref="banner">
+			<div class="detail-wrapper" ref="banner" v-show="content">
 				<!--日报标题-->
 				<p class="title">{{content.title}}</p>
 				<!--图片来源-->
@@ -174,12 +174,12 @@
 								var collection_array = JSON.parse(collection_str);
 								//如果已存在数据，跳出
 								var quit;
-								collection_array.collection.forEach(function(el){
-									if(el.id==vm.id){
-									   quit=true
+								collection_array.collection.forEach(function(el) {
+									if(el.id == vm.id) {
+										quit = true
 									}
 								});
-								if(quit){
+								if(quit) {
 									return false;
 								}
 								collection_array.collection.unshift(tmp);
@@ -190,7 +190,7 @@
 							}
 							var collection_josn = JSON.stringify(collection_array);
 							plus.storage.setItem('collection', collection_josn);
-						} else if(new_value === false && this.body  !== '') {
+						} else if(new_value === false && this.body !== '') {
 							//读取本地存储中collection数据
 							if(collection_str) {
 								var collection_array = JSON.parse(collection_str);
@@ -242,8 +242,6 @@
 					id: 'comment' //默认使用当前页面的url作为id
 				}]
 			});
-			//全局变量
-			var banner_el = vm.$refs.banner;
 
 			/*
 			 * 关闭窗口时清空数据
@@ -252,7 +250,7 @@
 				//延迟清空数据，避免瞬间白屏
 				setTimeout(function() {
 					vm.reset_data();
-					banner_el.setAttribute('style', '');
+					vm.$refs.banner.setAttribute('style', '');
 					window.scrollTo(0, 0); //重置滚动条位置
 					var collection_str = plus.storage.getItem('collection');
 				}, 300)
@@ -331,15 +329,21 @@
 				 *  功能描述：
 				 * 		调整加载顺序，等待banner图加载完成后，再加载余下内容。
 				 */
-				loadImage(rsp.image, function() {
-					banner_el.setAttribute("style", "background-image:url('" + this.src + "')");
-					banner_el.style.opacity = 1;
-					setTimeout(function() {
-						vm.body = rsp.body;
-					}, 50)
-				});
-				vm.content = rsp;
-				vm.src = rsp.share_url;
+
+				if(rsp.type == 2 || (rsp.type == 0 && !rsp.image_source)) {
+					vm.body = rsp.body
+				} else {
+					loadImage(rsp.image, function() {
+						vm.$refs.banner.setAttribute("style", "background-image:url('" + this.src + "')");
+						vm.$refs.banner
+						.style.opacity = 1;
+						setTimeout(function() {
+							vm.body = rsp.body;
+						}, 50)
+					});
+					vm.content = rsp;
+					vm.src = rsp.share_url;
+				}
 			}
 			/*  图片加载
 			 *  

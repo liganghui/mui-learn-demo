@@ -120,7 +120,7 @@
 					<span class="iconfont icon-weibiaoti1"></span>
 					<span>首页</span>
 				</div>
-				<div class="row" v-for="(item,index) in list" :class="{'row-active':i===index}" @click="selected(index)" :key="item.id">
+				<div class="row" v-for="(item,index) in list" :class="{'row-active':i===index}" @click="open_theme(item.id,index)" :key="item.id">
 					<span :data-id='item.id'>{{item.name}}</span>
 					<span class="iconfont icon-youjiantou"></span>
 				</div>
@@ -144,6 +144,9 @@
 				preloadPages: [{
 					url: 'collection.html',
 					id: 'collection' //默认使用当前页面的url作为id
+				}, {
+					url: 'theme.html',
+					id: 'theme'
 				}]
 			})
 			var vm = new Vue({
@@ -168,11 +171,11 @@
 				},
 				methods: {
 					selected: function(index) {
-						this.i = index;
+
 					},
 					back_index: function() {
 						this.i = '';
-						var obj=plus.webview.getWebviewById('collection');
+						var obj = plus.webview.getWebviewById('collection');
 						mui.fire(obj, 'close_collection', {});
 						mui.back();
 					},
@@ -181,6 +184,21 @@
 						mui.openWindow({
 							id: 'collection',
 							extras: {},
+							show: {
+								aniShow: 'fade-in', //页面显示动画，默认为”slide-in-right“；
+								duration: 200 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+							}
+						})
+					},
+					open_theme: function(id, index) {
+						mui.back();
+						this.i = index;
+						var obj = plus.webview.getWebviewById('theme');
+						mui.fire(obj, 'themeId', {
+							'id': id
+						});
+						mui.openWindow({
+							id: 'theme',
 							show: {
 								aniShow: 'fade-in', //页面显示动画，默认为”slide-in-right“；
 								duration: 200 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
