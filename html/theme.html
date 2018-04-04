@@ -33,7 +33,7 @@
 				<span class="title" slot="left">{{theme_data.name}}</span>
 			</app-nav>
 
-			<app-banner class="banner" :onerror="load_error" :style="{background:'#3e3e3e'}">
+			<app-banner class="banner" :onerror="load_error" :style="{backgroundImage: 'url(' +theme_data.background + ')'}">
 				<p class="description">{{theme_data.description}}</p>
 			</app-banner>
 			<div class="wrapper">
@@ -61,9 +61,14 @@
 						setTimeout(function() {
 							vm.$data = Object.assign(vm.$data, vm.defaultData);
 							window.scrollTo(0, 0); //重置滚动条位置
-						}, 300)
+						}, 200)
 					},
 					load_error: function(event) {
+						
+//						mui.ajax("")
+						
+						
+						console.log("触发");
 						event.target.style.background = "#3e3e3e";
 					},
 					openMenu: function() {

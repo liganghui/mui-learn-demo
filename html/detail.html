@@ -84,9 +84,11 @@
 			
 			.content-inner,
 			.headline-background {
-				background: #f9f9f9;
+				background: #fff;
 			}
-			
+			.headline{
+				border-bottom: none;
+			}
 			.img-place-holder {
 				height: 270px !important;
 				border-bottom: none;
@@ -122,7 +124,7 @@
 				<span class="image_source">{{content.image_source}}</span>
 			</div>
 			<!--日报主体内容-->
-			<div class="detail-content" v-html="body"></div>
+			<div class="detail-content" v-html="body"  :style="content?'':'margin-top:60px'"></div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>

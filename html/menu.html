@@ -174,10 +174,18 @@
 
 					},
 					back_index: function() {
+						mui.back();
 						this.i = '';
 						var obj = plus.webview.getWebviewById('collection');
 						mui.fire(obj, 'close_collection', {});
-						mui.back();
+						var wvs = plus.webview.getDisplayWebview();
+						setTimeout(function() {
+							wvs.forEach(function(el) {
+								if(el.id !== ('HBuilder' || 'menu')) {
+									plus.webview.hide(el.id, 'fade-out', 300);
+								}
+							})
+						}, 200)
 					},
 					open_collection: function() {
 						mui.back()
@@ -193,17 +201,26 @@
 					open_theme: function(id, index) {
 						mui.back();
 						this.i = index;
+						// 获取所有可视的Webview窗口
+						var wvs = plus.webview.getDisplayWebview();
+						var isShow = wvs.some(function(el) {
+							if(el.id == 'theme') {
+								return true;
+							}
+						})
+						if(!isShow) {
+							mui.openWindow({
+								id: 'theme',
+								show: {
+									aniShow: 'fade-in', //页面显示动画，默认为”slide-in-right“；
+									duration: 200 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+								}
+							})
+						}
 						var obj = plus.webview.getWebviewById('theme');
 						mui.fire(obj, 'themeId', {
 							'id': id
 						});
-						mui.openWindow({
-							id: 'theme',
-							show: {
-								aniShow: 'fade-in', //页面显示动画，默认为”slide-in-right“；
-								duration: 200 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
-							}
-						})
 					}
 				}
 			})
