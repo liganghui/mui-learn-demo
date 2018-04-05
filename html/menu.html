@@ -116,7 +116,7 @@
 				</div>
 			</header>
 			<div class="theme-list">
-				<div class="home" @click="back_index">
+				<div class="home" @click="back_index" :class="{'row-active':i===-1}">
 					<span class="iconfont icon-weibiaoti1"></span>
 					<span>首页</span>
 				</div>
@@ -153,7 +153,7 @@
 				el: '#menu',
 				data: {
 					list: [],
-					i: ''
+					i: -1
 				},
 				mounted: function() {
 					var self = this;
@@ -175,7 +175,7 @@
 					},
 					back_index: function() {
 						mui.back();
-						this.i = '';
+						this.i = -1;
 						var obj = plus.webview.getWebviewById('collection');
 						mui.fire(obj, 'close_collection', {});
 						var wvs = plus.webview.getDisplayWebview();

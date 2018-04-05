@@ -238,7 +238,7 @@ mui.init({
 		down: {
 			style: 'circle',
 			offset: '55px',
-			auto: false,
+			auto: true,
 			callback: pulldownRefresh
 		},
 		up: {
@@ -310,8 +310,8 @@ function pulldownRefresh() {
  */
 function monitoringDataUpdate(obj) {
 	//判断内容是否已存在
-	console.log(news.list_items);
-	if(news.list_items.length) {
+//	console.log(news.list_items);
+	if(news.list_items.length.stories>0) {
 		//判断当天内容是否已存在
 		if(obj.date === news.list_items[0].date) {
 			//记录列表第一项的ID
@@ -397,5 +397,7 @@ function init() {
 	//获取最新的数据并转换为json 对象
 	var json_data = JSON.parse(plus.storage.getItem(latestData));
 	//展示数据
-	news.showData(json_data);
+	//news.showData(json_data);
+	
+
 }

@@ -22,6 +22,9 @@
 				font-size: 18px;
 				color: #fff;
 			}
+			.banner{
+				background-size: 100% 100%;
+			}
 		</style>
 	</head>
 
@@ -33,11 +36,11 @@
 				<span class="title" slot="left">{{theme_data.name}}</span>
 			</app-nav>
 
-			<app-banner class="banner" :onerror="load_error" :style="{backgroundImage: 'url(' +theme_data.background + ')'}">
+			<app-banner class="banner"   :style="set_background(theme_data.background)" ref="banner" >
 				<p class="description">{{theme_data.description}}</p>
 			</app-banner>
 			<div class="wrapper">
-				<app-list :message="item" :loadimg="'../img/translate.png'" v-for="(item,index) in theme_data.stories" @click.native="openDetails($event,item.id,index)"></app-list>
+				<app-list :message="item"  :cache="false"   :loadimg="'../img/translate.png'" v-for="(item,index) in theme_data.stories" @click.native="openDetails($event,item.id,index)"></app-list>
 			</div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
@@ -63,13 +66,17 @@
 							window.scrollTo(0, 0); //重置滚动条位置
 						}, 200)
 					},
-					load_error: function(event) {
-						
-//						mui.ajax("")
-						
-						
-						console.log("触发");
-						event.target.style.background = "#3e3e3e";
+					set_background: function(url) {
+						var img = new Image();
+						img.src = url;
+						img.onload = function() {
+							vm.$refs.banner.$el.style.backgroundColor="";
+							vm.$refs.banner.$el.style.backgroundImage="url('" +url + "')";
+						}
+						img.onerror=function(){
+							vm.$refs.banner.$el.style.backgroundImage="";							
+							vm.$refs.banner.$el.style.backgroundColor="#3e3e3e";
+						}
 					},
 					openMenu: function() {
 						mui.openWindow({
@@ -81,7 +88,7 @@
 							}
 						})
 					},
-					openDetails: function(event,id) {
+					openDetails: function(event, id) {
 						//日报标题
 						var title = event.target.innerText;
 						//获得详情页面

@@ -26,12 +26,12 @@ function load(obj) {
 	temp.src = sd_path;
 	temp.onload = function() {
 		// 1存在, 则直接显示
-		console.log('已存在,直接显示==' + hb_path);
+//		console.log('已存在,直接显示==' + hb_path);
 		setLoaded(obj,sd_path);
 	};
 	temp.onerror = function() {
 		// 2不存在, 则下载图片
-		console.log('不存在==' + hb_path);
+//		console.log('不存在==' + hb_path);
 		//为避免下载出错或下载超时过长,先用src加载图显示
 		var temp = new Image();
 		temp.onload = function() {
@@ -65,14 +65,14 @@ function startTask() {
 	var image_url = obj.getAttribute('data-src');
 	var hb_path = obj.getAttribute('hb_path');
 	var sd_path=obj.getAttribute('sd_path');
-	console.log("从任务集合中取一个任务==" + hb_path);
+//	console.log("从任务集合中取一个任务==" + hb_path);
 	//检查是否已经下载过,避免downloader文件存在时无回调,手机发烫;
 	//(本来打算先检查图片是否已在任务队列中,如果存在则不加入;但是可能图刚加入时就被取出,导致后面相同的图又重复加入,出现本地图存在,下载无回调的问题)
 	var temp = new Image();
 	temp.src = sd_path;
 	temp.onload = function() {
 		//已下载则跳过
-		console.log("已下载则跳过==" + hb_path);
+//		console.log("已下载则跳过==" + hb_path);
 		startTask();
 	};
 	temp.onerror = function() {
@@ -82,7 +82,7 @@ function startTask() {
 			"timeout": 10,
 			"retry": 2
 		}, function(download, status) {
-			console.log("下载回调status==" + status+"-->"+hb_path);
+//			console.log("下载回调status==" + status+"-->"+hb_path);
 			if (status == 200) {
 				setLoaded(obj,sd_path);
 			}else{
