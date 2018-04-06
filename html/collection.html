@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="UTF-8">
 		<title>我的收藏</title>
@@ -15,7 +14,6 @@
 			}
 		</style>
 	</head>
-
 	<body>
 		<div id="collection">
 			<app-nav>
@@ -24,7 +22,7 @@
 				<span class="title" slot="left">{{collection_data.length}} 条收藏</span>
 			</app-nav>
 			<div class="wrapper">
-				<app-list :message="item" :loadimg="'../img/translate.png'" v-for="(item,index) in collection_data" @click.native="openDetails($event,item.id,index)"></app-list>
+				<app-list :message="item"  cache='fasle' :loadimg="'../img/translate.png'" v-for="(item,index) in collection_data" @click.native="openDetails($event,item.id,index)"></app-list>
 			</div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
@@ -80,7 +78,6 @@
 					"styles": {
 						'cachemode': 'cacheElseNetwork',
 						"width": '80%' //新页面宽度，默认为100%
-
 					}
 				}, {
 					url: 'detail.html',
@@ -101,6 +98,10 @@
 			//自定义事件，监听事件，关闭遮罩层
 			document.addEventListener('close_collection', function(event) {
 				mui.back()
+			});
+			//监听事件
+			document.addEventListener('update_list', function(event) {
+				plusReady()
 			});
 		</script>
 	</body>

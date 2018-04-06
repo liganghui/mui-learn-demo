@@ -92,10 +92,7 @@
 			.img-place-holder {
 				height: 270px !important;
 				border-bottom: none;
-			}
-			
-			.question-title {}
-			
+			}			
 			.content-wrap {
 				background: none;
 			}
@@ -168,7 +165,7 @@
 						if(new_value) {
 							var tmp = {
 								'id': this.id,
-								'title': this.content.title,
+								'title': this.content.title?this.content.title:mui('.headline-title')[0].innerText,
 								'images': this.content.images
 							}
 							//读取本地存储中collection数据
@@ -293,7 +290,7 @@
 					},
 					error: function(xhr, type, errorThrown) {
 						//弹出系统提示窗
-						mui.toast('获取内容失败');
+//						mui.toast('获取内容失败');
 					}
 				});
 				/* 获取日报对应的额外信息,在请求中添加随机数，避免被缓存。
@@ -307,7 +304,7 @@
 						callback2(rsp)
 					},
 					error: function(xhr, type, errorThrown) {
-						mui.toast('获取评论失败');
+//						mui.toast('获取评论失败');
 					}
 				});
 			}

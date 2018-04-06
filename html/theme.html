@@ -11,7 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="../css/imgload.css" />
 		<style>
 			.wrapper {
-				padding: 30px 10px 0;
+				padding: 10px;
 			}
 			
 			.description {
@@ -22,12 +22,25 @@
 				font-size: 18px;
 				color: #fff;
 			}
-			.banner{
+			
+			.banner {
 				background-size: 100% 100%;
+			}
+			.editors{
+				padding: 0px 0 10px ;
+				color: #666666;
+				font-size: 14px;
+			}
+			.editors img{
+				vertical-align:middle;
+				margin-left: 10px;
+				border-radius: 50%;
+				height: 30px;
+				width: 30px;
+				background: #0062CC;
 			}
 		</style>
 	</head>
-
 	<body>
 		<div id="theme">
 			<app-nav>
@@ -36,11 +49,19 @@
 				<span class="title" slot="left">{{theme_data.name}}</span>
 			</app-nav>
 
-			<app-banner class="banner"   :style="set_background(theme_data.background)" ref="banner" >
+			<app-banner class="banner" :style="set_background(theme_data.background)" ref="banner">
 				<p class="description">{{theme_data.description}}</p>
 			</app-banner>
 			<div class="wrapper">
-				<app-list :message="item"  :cache="false"   :loadimg="'../img/translate.png'" v-for="(item,index) in theme_data.stories" @click.native="openDetails($event,item.id,index)"></app-list>
+				<div class="editors">
+					<span class="title">主编  </span>
+					<span  v-for="item in theme_data.editors">
+						<img :src="item.avatar"/>
+					</span>
+				</div>
+				<template v-for="items in theme_list">
+					<app-list :message="item" :cache="false" :loadimg="'../img/translate.png'" v-for="(item,index) in items.stories" @click.native="openDetails($event,item.id,index)"></app-list>
+				</template>
 			</div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
@@ -52,7 +73,10 @@
 			var vm = new Vue({
 				el: "#theme",
 				data: {
-					theme_data: ''
+					theme_id: '', //主题日报的ID
+					story_id: '', //stories 中第一个对象的 id
+					theme_data: {}, //用于渲染主题日报的背景图，名称，简介，主编信息。
+					theme_list: [] //用于主题日报的列表渲染
 				},
 				created() {
 					//记录初始值，用于清空数据
@@ -70,12 +94,12 @@
 						var img = new Image();
 						img.src = url;
 						img.onload = function() {
-							vm.$refs.banner.$el.style.backgroundColor="";
-							vm.$refs.banner.$el.style.backgroundImage="url('" +url + "')";
+							vm.$refs.banner.$el.style.backgroundColor = "";
+							vm.$refs.banner.$el.style.backgroundImage = "url('" + url + "')";
 						}
-						img.onerror=function(){
-							vm.$refs.banner.$el.style.backgroundImage="";							
-							vm.$refs.banner.$el.style.backgroundColor="#3e3e3e";
+						img.onerror = function() {
+							vm.$refs.banner.$el.style.backgroundImage = "";
+							vm.$refs.banner.$el.style.backgroundColor = "#3e3e3e";
 						}
 					},
 					openMenu: function() {
@@ -113,12 +137,31 @@
 				beforeback: function() {
 					vm.reset_data();
 					return true;
+				},
+				pullRefresh: {
+					container: "#theme", //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					up: {
+						height: 50, //可选.默认50.触发上拉加载拖动距离
+						auto: false, //可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: function() {
+							//请求列表信息流
+							mui.getJSON("https://news-at.zhihu.com/api/4/theme/" + vm.theme_id + "/before/" + vm.story_id, {}, function(rsp) {
+								vm.story_id = rsp.stories[0].id;
+								//添加数据
+								vm.theme_list.push(rsp);								
+								//关闭动画
+								mui('#theme').pullRefresh().endPullupToRefresh();
+							});
+						} //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					}
 				}
 			});
 			//自定义事件
 			document.addEventListener('themeId', function(event) {
-				var theme_id = event.detail.id;
-				getThemeList(theme_id, getThemeList)
+				vm.theme_id = event.detail.id;
+				getThemeList(event.detail.id, getThemeList)
 			});
 
 			//获取日报主题列表
@@ -138,7 +181,11 @@
 			}
 			//成功回调
 			function renderList(rsp) {
+				vm.story_id = rsp.stories[0].id;
+				vm.theme_data = '';
+				vm.theme_list = [];
 				vm.theme_data = rsp;
+				vm.theme_list.push(rsp);
 			}
 		</script>
 	</body>
