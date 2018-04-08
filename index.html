@@ -8,7 +8,7 @@
 		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
 		<link rel="stylesheet" type="text/css" href="css/iconfont-2.css" />
 		<link rel="stylesheet" type="text/css" href="css/swiper-4.1.0.min.css" />
-		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/components.css" />
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
 		<link rel="stylesheet" type="text/css" href="css/imgload.css"/>
 	</head>
@@ -19,12 +19,13 @@
 				<!--使用插槽分发内容-->
 				<span class="iconfont icon-menu" @click="openMenu" slot="left"></span>
 				<span class="app-bar-title" slot="left">{{tapTitle}}</span>
-				<span class="iconfont icon-lingdang" @click="message" slot="right"></span>
+				<!-- 消息按钮与更多按钮 -->
+				<!--<span class="iconfont icon-lingdang" @click="message" slot="right"></span>
 				<span class="iconfont icon-gengduo" @click="showMore" slot="right"></span>
 				<div class="more-options" v-show='moreSwitch' slot="right">
 					<p>夜间模式</p>
 					<p>设置选项</p>
-				</div>
+				</div>-->
 			</app-nav>
 			<!--轮播图-->
 			<app-banner class="swiper-container">
@@ -35,12 +36,12 @@
 				</div>
 				<!-- 分页器 -->
 				<div class="swiper-pagination"></div>
-				<!--分页选择器-->
+				<!--自定义分页选择器-->
 				<div class="app-slider-transition-action" v-show="top_items.length>0"></div>
 			</app-banner>
 			<!--文章列表-->
 			<div class="messages-wrapper" v-for="items in list_items" :key="items.date">
-				<p class="date">{{formatDate(items.date)}}</p>
+				<p ref="date">{{formatDate(items.date)}}</p>
 				<!--传递参数给组件 并绑定原生事件-->
 				<app-list :message="item" :loadimg="'img/translate.png'" v-for="(item,index) in items.stories" @click.native="openDetails($event,item.id,index)"></app-list>
 			</div>
@@ -50,10 +51,11 @@
 		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/swiper-4.1.0.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/vue.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/components.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/md5.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/imgload.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="js/index.js"></script>
+		<script src="js/config.js" type="text/javascript" charset="utf-8"></script>
 	</body>
 
 </html>
