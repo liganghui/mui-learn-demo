@@ -5,17 +5,32 @@
       "html/browser.html",
       "html/detail.html"
     ],
-    "resources": []
+    "resources": [
+      "css/index.css",
+      "css/imgload.css",
+      "css/swiper-4.1.0.min.css",
+      "img/translate.png",
+      "css/common.css",
+      "css/iconfont.css",
+      "css/mui.min.css",
+      "css/iconfont-2.css"
+    ]
   },
   "html/detail.html": {
     "refer": [
-      "html/comment.html"
+      "html/comment.html",
+      "html/collection.html"
     ],
-    "resources": []
+    "resources": [
+      "css/news.css",
+      "css/mui.min.css"
+    ]
   },
   "html/menu.html": {
     "refer": [
-      "html/collection.html"
-    ]
+      "html/collection.html",
+      "html/theme.html"
+    ],
+    "resources": []
   }
 }
