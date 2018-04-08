@@ -143,9 +143,9 @@
 				"android": {
 					"mdpi": "", /*普通屏启动图片，分辨率：240x282*/
 					"ldpi": "", /*大屏启动图片，分辨率：320x442*/
-					"hdpi": "C:/Users/li/Desktop/timg 3.png", /*高分屏启动图片，分辨率：480x762*/
-					"xhdpi": "C:/Users/li/Desktop/timg 2.png", /*720P高分屏启动图片，分辨率：720x1242*/
-					"xxhdpi": "C:/Users/li/Desktop/timg (1).png"
+					"hdpi": "unpackage/res/splashScreen/480.png", /*高分屏启动图片，分辨率：480x762*/
+					"xhdpi": "unpackage/res/splashScreen/720.png", /*720P高分屏启动图片，分辨率：720x1242*/
+					"xxhdpi": "unpackage/res/splashScreen/1080.png"
 				}
 			}
 		},
