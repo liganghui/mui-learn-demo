@@ -33,7 +33,7 @@
 ## 如何运行
 
  1. 打包下载项目,使用HBuilder真机调试
- 2. 下载打包后的APP   [Android]()  
+ 2. 下载打包后的APP   [Android](https://github.com/liganghui/mui-learn-demo/raw/master/doc/demo.apk)  
 
 
 ## 使用的API接口
@@ -87,9 +87,9 @@
 
 
 首页JS逻辑：
-![image](https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/%E9%A6%96%E9%A1%B5JS%E9%80%BB%E8%BE%91%E5%9B%BE.png)
+![image](https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/js-1.png)
 
 
 下拉刷新逻辑：
-![image](https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0%E9%80%BB%E8%BE%91%E5%9B%BE.png)
+![image](https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/js-2.png)
 
