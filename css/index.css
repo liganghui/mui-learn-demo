@@ -103,7 +103,7 @@
 /* 列表容器 */
 .messages-wrapper {
 	overflow: hidden;
-	padding: 0 8px;
+	padding: 12px 8px 0px;
 }
 .messages-wrapper .date{
 	margin: 18px 0;

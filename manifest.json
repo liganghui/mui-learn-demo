@@ -38,6 +38,9 @@
 		},
 		"Storage": {
 			"description": "本地存储，访问应用本地存储数据"
+		},
+		"Device": {
+			"description": "设备信息"
 		}
 	},
 	"plus": {
@@ -61,18 +64,7 @@
 				"keystore": "",/*Android应用打包使用的密钥库文件*/
 				"password": "",/*Android应用打包使用密钥库中证书的密码*/
 				"aliasname": "",/*Android应用打包使用密钥库中证书的别名*/
-				"permissions": [
-					"<uses-permission android:name=\"com.android.launcher.permission.INSTALL_SHORTCUT\"/>",
-					"<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
-					"<uses-permission android:name=\"android.permission.VIBRATE\"/>",
-					"<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
-					"<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
-					"<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
-					"<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-					"<uses-feature android:name=\"android.hardware.camera\"/>",
-					"<uses-permission android:name=\"com.android.launcher.permission.UNINSTALL_SHORTCUT\"/>",
-					"<uses-permission android:name=\"android.permission.CAMERA\"/>"
-				]
+				"permissions": ["<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>","<uses-permission android:name=\"com.android.launcher.permission.INSTALL_SHORTCUT\"/>","<uses-permission android:name=\"android.permission.VIBRATE\"/>","<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>","<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>","<uses-permission android:name=\"android.permission.CALL_PHONE\"/>","<uses-permission android:name=\"com.android.launcher.permission.UNINSTALL_SHORTCUT\"/>","<uses-permission android:name=\"android.permission.CAMERA\"/>"]
 			},
 			"orientation": [
 				"portrait-primary",
@@ -151,9 +143,9 @@
 				"android": {
 					"mdpi": "", /*普通屏启动图片，分辨率：240x282*/
 					"ldpi": "", /*大屏启动图片，分辨率：320x442*/
-					"hdpi": "", /*高分屏启动图片，分辨率：480x762*/
-					"xhdpi": "", /*720P高分屏启动图片，分辨率：720x1242*/
-					"xxhdpi": ""
+					"hdpi": "C:/Users/li/Desktop/timg 3.png", /*高分屏启动图片，分辨率：480x762*/
+					"xhdpi": "C:/Users/li/Desktop/timg 2.png", /*720P高分屏启动图片，分辨率：720x1242*/
+					"xxhdpi": "C:/Users/li/Desktop/timg (1).png"
 				}
 			}
 		},
@@ -177,7 +169,13 @@
 					"js/swiper-4.1.0.min.css",
 					"js/mui.min.js",
 					"js/swiper-4.1.0.min.js",
-					"js/vue.min.js"
+					"js/vue.min.js",
+					"css/index.css",
+					"css/imgload.css",
+					"css/swiper-4.1.0.min.css",
+					"img/translate.png",
+					"css/common.css",
+					"css/iconfont-2.css"
 				],
 				"priority": 0,
 				"refer": [
@@ -188,16 +186,21 @@
 				]
 			},
 			"html/detail.html": {
-				"resources": [],
+				"resources": [
+					"css/news.css",
+					"css/mui.min.css"
+				],
 				"refer": [
-					"html/comment.html"
+					"html/comment.html",
+					"html/collection.html"
 				],
 				"priority": 0
 			},
 			"html/menu.html": {
 				"resources": [],
 				"refer": [
-					"html/collection.html"
+					"html/collection.html",
+					"html/theme.html"
 				],
 				"priority": 0
 			}

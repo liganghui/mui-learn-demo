@@ -6,9 +6,9 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
 		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
-		<link rel="stylesheet" type="text/css" href="../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../css/components.css" />
 		<link rel="stylesheet" type="text/css" href="../css/news.css" />
-		<link rel="stylesheet" type="text/css" href="../css/loaders.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/vue-loaders.css"/>
 		<style>
 			p {
 				margin: 0 !important;
@@ -91,45 +91,42 @@
 				margin-right: 6vw;
 				float: right;
 			}
-			
-			.ball-spin-fade-loader{
-				background: rgb(0,150,136);
-				transform:scale(0.8,0.8);
-			}
 			#popover {
 				width: 80vw;
 				left: 10vw;
-				top: 30vh;
+				top: 40vh;
 				height: 18vh;
+				position: fixed;
+			}
+			.loader-animation{
+				float: left;
+				margin: 24px 0 0 40px;
+				width:85px;
+			}
+			.loader-text{
+				line-height: 18vh;
+				margin-left: 100px;
+				font-size: 18px;
+				color: #838080;
 			}
 		</style>
 	</head>
-
 	<body>
 		<!--评论容器-->
 		<div id="comment-wrapper">
 			<header class="mui-bar mui-bar-nav app-bar">
 				<div class="app-bar-left">
 					<span class="mui-action-back iconfont icon-fanhui"></span>
-					<span class="app-bar-title">{{comments_total}}条点评</span>
+					<span class="title">{{comments_total}}条点评</span>
 				</div>
 			</header>
 			<!-- 弹出层 -->
 			<div id="popover" class="mui-popover">
-				<div class="loader">
-					<div class="loader-inner ball-spin-fade-loader">
-						<div></div>
-						<div></div>
-						<div></div>
-						<div></div>
-						<div></div>
-						<div></div>
-						<div></div>
-						<div></div>
-					</div>
+				<div class="loader-animation"> 
+					<ball-spin-fade-loader color="#4FBCF5" size="12px" ><ball-spin-fade-loader>
 				</div>
-				<div class="loader-text">
-					正在加载
+				<div class="loader-text"> 
+					正在加载...
 				</div>
 			</div>
 			<!--长评论-->
@@ -153,7 +150,7 @@
 							</div>
 							<div class="comment-footer">
 								<span class="time">{{time(item.time)}}</span>
-								<span class="more"><!--展开--></span>
+								<span class="more"><!--展开...--></span>
 							</div>
 						</div>
 					</div>
@@ -168,10 +165,10 @@
 			<!--短评论-->
 			<div class="short-comment" ref='short'>
 				<div class="total" @click="open_short_comments">
-					<p>{{short_comments}}条短评
+					<span>{{short_comments}}条短评
 						<span class="short-comment-switch" v-if="short_comment_switch">︾</span>
 						<span class="short-comment-switch" v-else>︽</span>
-					</p>
+					</span>
 				</div>
 				<template v-if="short_comments_data.length">
 					<div class="comment-content" v-for="item in short_comments_data" :key="item.id">
@@ -199,7 +196,8 @@
 
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/components.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/vue-loaders.umd.js" type="text/javascript" charset="utf-8"></script>
 		<script>
 			mui.init({
 				beforeback: function() {
@@ -207,6 +205,7 @@
 					window.scrollTo(0, 0); //重置滚动条位置
 				}
 			});
+			Vue.use(VueLoaders);
 			var vm = new Vue({
 				el: "#comment-wrapper",
 				data: {

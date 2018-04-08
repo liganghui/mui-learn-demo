@@ -11,24 +11,7 @@ var news = new Vue({
 		maskSwitch: false //遮罩层开关
 	},
 	methods: {
-		/*
-		 *  @description  接受JSON数据对象，展现到页面
-		 *  @param {Obj} json 需要展现的JSON对象
-		 */
-		showData: function(obj) {
-			//将列表数据以 日期+列表数据  方式保存
-			var data = {};
-			//列表数据
-			data.stories = obj.stories;
-			//日期
-			data.date = obj.date;
-			//添加到数组中
-			news.list_items.push(data);
-			//记录当前数据的日期
-			news.dateParam = obj.date;
-			//轮播图数据
-			news.top_items = obj.top_stories;
-		},
+
 		/* 
 		 *   @description  用于格式化时间字符串 
 		 *   @example  
@@ -198,6 +181,23 @@ var news = new Vue({
 			this.moreSwitch = false;
 			//遮罩层显示
 			mask.show();
+		},
+		/*
+		 *  @description  接受JSON数据对象，展现到页面
+		 *  @param {Obj} json 需要展现的JSON对象
+		 */
+		showData: function(obj) {
+			//将列表数据格式成：日期+列表数据的形式，方便数据展现
+			var list ={};
+			//列表数据 
+			list.stories = obj.stories;
+			list.date=obj.date; 
+			//添加到数组中
+			news.list_items.push(list);
+			//记录当前数据的日期
+			news.dateParam = obj.date;
+			//轮播图数据
+			news.top_items = obj.top_stories;
 		}
 	},
 	watch: {
@@ -218,7 +218,7 @@ var news = new Vue({
 					tmp.push(height);
 				}
 				news.list_height = tmp;
-			}, 1000)
+			}, 1800)
 		}
 	},
 	updated() {
@@ -236,7 +236,7 @@ mui.init({
 	pullRefresh: {
 		container: '#app',
 		down: {
-			style: 'circle',
+			style: 'circle', 
 			offset: '55px',
 			auto: true,
 			callback: pulldownRefresh
@@ -277,32 +277,48 @@ mui.init({
 //下拉刷新
 function pulldownRefresh() {
 	if(window.plus && plus.networkinfo.getCurrentType() === plus.networkinfo.CONNECTION_NONE) {
-		plus.nativeUI.toast('似乎已断开与互联网的连接', {
-			verticalAlign: 'middle'
+		plus.nativeUI.toast('哦，似乎网络开小差了', {
+			verticalAlign: 'bttom'
 		});
+		mui('#app').pullRefresh().endPulldown();
 		return;
 	}
-	//请求列表信息流
-	mui.getJSON("https://news-at.zhihu.com/api/4/news/latest", {}, function(rsp) {
-		//关闭动画
-		mui('#app').pullRefresh().endPulldown();
-		//记录返回值,确定是否需要更新数据
-		var val = monitoringDataUpdate(rsp);
-		if(!val) {
-			return false;
+	//增加随机数避免缓存
+	mui.ajax('https://news-at.zhihu.com/api/4/news/latest', {
+		dataType: 'json', //服务器返回json格式数据
+		timeout: 4000, //超时时间设置为4秒；
+		type: 'get', //HTTP请求类型
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		success: function(rsp) {
+			//关闭动画
+			mui('#app').pullRefresh().endPulldown();
+			//记录返回值,确定是否需要整体更新
+			var val = monitoringDataUpdate(rsp);
+			if(!val) {
+				return false;
+			}
+			//json 对象转为字符串并存储数据
+			var st = JSON.stringify(rsp);
+			plus.storage.setItem(rsp.date, st);
+			//记录最新数据的日期
+			plus.storage.setItem("latestData", rsp.date);
+			//展现数据
+			news.showData(rsp);
+		},
+		error: function(xhr, type, errorThrown) {
+			//关闭动画
+			mui('#app').pullRefresh().endPulldown();
+			plus.nativeUI.toast('更新超时，请稍后再试吧', {
+				verticalAlign: 'bottom'
+			});
 		}
-		//json 对象转为字符串并存储数据
-		var st = JSON.stringify(rsp);
-		plus.storage.setItem(rsp.date, st);
-		//记录最新数据的日期
-		plus.storage.setItem("latestData",rsp.date);
-		//展现数据
-		news.showData(rsp)
 	});
 }
 /*
  *  
- *  @description 监听数据对象，是否更新数据
+ *  @description 监测服务端的数据，是否需要“整体”更新页面
  * 
  *  @param  {Object}  obj  ajax响应的json对象 
  *  @return  {true||false}   true=需要更新页面  false=不需要更新
@@ -310,23 +326,28 @@ function pulldownRefresh() {
  */
 function monitoringDataUpdate(obj) {
 	//判断内容是否已存在
-//	console.log(news.list_items);
-	if(news.list_items.length.stories>0) {
-		//判断当天内容是否已存在
+	if(news.list_items.length) {
+		//判断今天内容是否已存在
 		if(obj.date === news.list_items[0].date) {
 			//记录列表第一项的ID
 			var firstItemID = news.list_items[0].stories[0].id;
 			//判断内容是否有更新
 			if(firstItemID === obj.stories[0].id) {
+				//console.log("没有更新")
 				return false;
 			} else {
+				//console.log("有更新")
 				//遍历数组，追加新数据
 				obj.stories.every(function(val, index) {
 					//检测当前项是否已存在
 					if(val.id !== firstItemID) {
-						news.list_items.unshift(val);
-					}
+						news.list_items[0].stories.unshift(val);
+					} 
 				})
+				//更新本地数据
+				var st = JSON.stringify(obj);
+				plus.storage.setItem(obj.date, st);
+				return false;
 			}
 		}
 	}
@@ -347,6 +368,10 @@ function pullupfresh() {
 
 /*******************	事件监听    *************************/
 
+/*
+ * @description  监听滚动事件，更新标题
+ * 
+ */
 window.onscroll = function() {
 	//关闭遮罩
 	news.maskClick();
@@ -355,21 +380,25 @@ window.onscroll = function() {
 	if(top < 0) {
 		news.tapTitle = '首页'
 	} else {
+		//遍历列表高度数组
 		for(var i = 0; i < news.list_height.length; i++) {
 			if(top >= news.list_height[i] && top <= news.list_height[i + 1]) {
-				var date_list = document.getElementsByClassName('date');
+				//更新时间标题
+				var date_list = news.$refs.date;
 				news.tapTitle = date_list[i].innerText;
 				break;
 			}
 		}
 	}
 }
+
+//mui遮罩层点击回调函数
 var mask = mui.createMask(function() {
 	//点击蒙版事件
 	news.moreSwitch = false;
 	plus.webview.hide("menu", "slide-out-left", 300);
 });
-//自定义事件，监听事件，关闭遮罩层
+//自定义事件：关闭遮罩层
 document.addEventListener('close_mask', function(event) {
 	mask.close();
 });
@@ -380,9 +409,6 @@ if(window.plus) {
 }
 // H5 plus事件处理
 function plusReady() {
-	// 设置系统状态栏背景色
-	plus.navigator.setStatusBarBackground('#1976d2');
-	plus.navigator.setStatusBarStyle('light');
 	init();
 }
 
@@ -394,10 +420,15 @@ function plusReady() {
 function init() {
 	//获取最新数据的日期
 	var latestData = plus.storage.getItem("latestData");
-	//获取最新的数据并转换为json 对象
-	var json_data = JSON.parse(plus.storage.getItem(latestData));
-	//展示数据
-	//news.showData(json_data);
-	
+	if(latestData) {
+		//获取最新的数据并转换为json 对象
+		var json_data = JSON.parse(plus.storage.getItem(latestData));
+		//展示数据
+		news.showData(json_data);
+	}
 
 }
+//应用从后台切换到前台，触发更新
+document.addEventListener("resume", function() {
+	mui('#app').pullRefresh().pulldownLoading();
+});

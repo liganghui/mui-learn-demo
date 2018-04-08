@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
 		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
-		<link rel="stylesheet" type="text/css" href="../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../css/components.css" />
 		<link rel="stylesheet" type="text/css" href="../css/imgload.css" />
 		<style>
 			.wrapper {
@@ -27,9 +27,10 @@
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/components.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/md5.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/imgload.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/config.js" type="text/javascript" charset="utf-8"></script>
 		<script>
 			var vm = new Vue({
 				el: '#collection',
@@ -93,7 +94,9 @@
 			function plusReady() {
 				//读取数据
 				var data = JSON.parse(plus.storage.getItem("collection"));
-				vm.collection_data = data.collection;
+				if(data){
+					vm.collection_data = data.collection;
+				}
 			}
 			//自定义事件，监听事件，关闭遮罩层
 			document.addEventListener('close_collection', function(event) {

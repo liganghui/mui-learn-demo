@@ -7,7 +7,7 @@
 		<title>日报详情</title>
 		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
 		<link rel="stylesheet" type="text/css" href="../css/iconfont.css" />
-		<link rel="stylesheet" type="text/css" href="../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../css/components.css" />
 		<link rel="stylesheet" type="text/css" href="../css/news.css" />
 		<style>
 			.icon-dianzan {
@@ -86,13 +86,16 @@
 			.headline-background {
 				background: #fff;
 			}
-			.headline{
+			
+			.headline {
 				border-bottom: none;
 			}
+			
 			.img-place-holder {
 				height: 270px !important;
 				border-bottom: none;
-			}			
+			}
+			
 			.content-wrap {
 				background: none;
 			}
@@ -121,11 +124,11 @@
 				<span class="image_source">{{content.image_source}}</span>
 			</div>
 			<!--日报主体内容-->
-			<div class="detail-content" v-html="body"  :style="content?'':'margin-top:60px'"></div>
+			<div class="detail-content" v-html="body" :style="content?'':'margin-top:60px'"></div>
 		</div>
 		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/components.js" type="text/javascript" charset="utf-8"></script>
 		<script>
 			//***********************Vue 初始化**********************8
 			var vm = new Vue({
@@ -133,7 +136,7 @@
 				data: {
 					//日报ID
 					id: '',
-					//日报顶部内容
+					//日报背景图与标题
 					content: '',
 					//日报附加内容
 					extra: '',
@@ -151,6 +154,7 @@
 					this.defaultData = JSON.parse(JSON.stringify(this.$data));
 				},
 				watch: {
+					//监听点赞
 					like_switch: function(new_value, old_value) {
 						if(new_value) {
 							plus.storage.setItem(this.id + "_like", "true");
@@ -160,18 +164,23 @@
 							this.extra.popularity -= 1;
 						}
 					},
+					//监听收藏点击
 					collection_switch: function(new_value, old_value) {
+						//读取收藏数据
 						var collection_str = plus.storage.getItem('collection');
+						//将日报的数据存储到收藏列表中
 						if(new_value) {
 							var tmp = {
 								'id': this.id,
-								'title': this.content.title?this.content.title:mui('.headline-title')[0].innerText,
+								//在主题日报中，会存在没有标题的情况
+								'title': this.content.title ? this.content.title : mui('.headline-title')[0].innerText,
 								'images': this.content.images
 							}
-							//读取本地存储中collection数据
+							//本地存在收藏数据时
 							if(collection_str) {
+								//转换成数组
 								var collection_array = JSON.parse(collection_str);
-								//如果已存在数据，跳出
+								//如果数据中已存该项，跳出
 								var quit;
 								collection_array.collection.forEach(function(el) {
 									if(el.id == vm.id) {
@@ -181,16 +190,20 @@
 								if(quit) {
 									return false;
 								}
+								//将新的日报数据，添加到收藏数组中
 								collection_array.collection.unshift(tmp);
 							} else {
+								//不存在收藏数据时，创建新的。
 								var collection_array = {
 									'collection': [tmp]
 								};
 							}
+							//转换成json字符串
 							var collection_josn = JSON.stringify(collection_array);
+							//保存到本地
 							plus.storage.setItem('collection', collection_josn);
 						} else if(new_value === false && this.body !== '') {
-							//读取本地存储中collection数据
+							//读取本地存储中collection数据，遍历收藏数据，排除该项
 							if(collection_str) {
 								var collection_array = JSON.parse(collection_str);
 								collection_array.collection = collection_array.collection.filter(function(el) {
@@ -230,6 +243,8 @@
 			// mui 初始化
 			mui.init({
 				beforeback: function() {
+
+					//清空页面数据
 					clearAllData();
 					//返回true，继续页面关闭逻辑
 					return true;
@@ -237,8 +252,11 @@
 				swipeBack: true, //启用右滑关闭功能
 				//预加载
 				preloadPages: [{
-					url: 'comment.html',
+					url: 'comment.html', //评论页
 					id: 'comment' //默认使用当前页面的url作为id
+				}, {
+					url: 'collection.html', //我的收藏
+					id: 'collection'
 				}]
 			});
 
@@ -251,7 +269,6 @@
 					vm.reset_data();
 					vm.$refs.banner.setAttribute('style', '');
 					window.scrollTo(0, 0); //重置滚动条位置
-					var collection_str = plus.storage.getItem('collection');
 				}, 300)
 			}
 
@@ -280,6 +297,12 @@
 			 *  @param {Function} fn2  文章额外信息请求成功回调函数
 			 */
 			function getArticle(id, time, callback1, callback2) {
+				if(window.plus && plus.networkinfo.getCurrentType() === plus.networkinfo.CONNECTION_NONE) {
+					plus.nativeUI.toast('哦，似乎网络开小差了', {
+						verticalAlign: 'bttom'
+					});
+					return;
+				}
 				//获取日报详细内容
 				mui.ajax('https://news-at.zhihu.com/api/4/news/' + id, {
 					type: 'GET',
@@ -290,7 +313,7 @@
 					},
 					error: function(xhr, type, errorThrown) {
 						//弹出系统提示窗
-//						mui.toast('获取内容失败');
+						mui.toast('网络不给力，请稍后重试');
 					}
 				});
 				/* 获取日报对应的额外信息,在请求中添加随机数，避免被缓存。
@@ -304,7 +327,7 @@
 						callback2(rsp)
 					},
 					error: function(xhr, type, errorThrown) {
-//						mui.toast('获取评论失败');
+						//mui.toast('网络不给力，请稍后重试');
 					}
 				});
 			}
@@ -329,13 +352,13 @@
 				 * 		调整加载顺序，等待banner图加载完成后，再加载余下内容。
 				 */
 
-				if(rsp.type == 2 || (rsp.type == 0 && !rsp.image_source)) {
+				if(rsp.theme) {
 					vm.body = rsp.body
 				} else {
 					loadImage(rsp.image, function() {
 						vm.$refs.banner.setAttribute("style", "background-image:url('" + this.src + "')");
 						vm.$refs.banner
-						.style.opacity = 1;
+							.style.opacity = 1;
 						setTimeout(function() {
 							vm.body = rsp.body;
 						}, 50)
@@ -381,8 +404,8 @@
 				}
 			}
 			//TODO 上划与下滑时控制标题栏 
-			//						bar.style.opacity = 1;
-			//						bar.style.display = 'block';
+			//	bar.style.opacity = 1;
+			//	bar.style.display = 'block';
 
 			/************************** 标题栏按钮点击事件  ******************************/
 
@@ -426,7 +449,7 @@
 				})
 			}
 			/*
-			 * @description 读取收藏与点赞数据，更新页面状态
+			 * @description 读取本地存储中收藏与点赞数据，更新页面状态
 			 * 
 			 */
 			function setExtraState() {
@@ -438,6 +461,10 @@
 							vm.collection_switch = true;
 						}
 					})
+				}
+				var like_str = plus.storage.getItem(vm.id + "_like");
+				if(like_str) {
+					vm.like_switch = true;
 				}
 			}
 		</script>
