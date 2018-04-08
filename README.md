@@ -16,13 +16,19 @@
  
 ## 功能演示 
 
-<img  width="365" height="619" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo1.png"> <img width="365" height="619" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo1.gif">
+
+### 首页与详情页
+<img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo1.png"> <img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo1.gif">
 
 
-<img  width="365" height="619" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo2.png"> <img  width="365" height="619" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo2.gif">
+
+### 菜单栏与主题日报
+<img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo2.png"> <img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo2.gif">
 
 
-<img  width="365" height="619" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo3.png"> <img  width="365" height="619" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo3.gif">
+
+### 评论页
+<img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo3.png"> <img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo3.gif">
 
 ## 如何运行
 
