@@ -1,6 +1,6 @@
  ## 说明
 
- :wave: :hand:这是一个使用Mui开发的仿知乎日报的APP。  
+ :wave:这是一个使用Mui开发的仿知乎日报的APP。  
 
  主要使用了：MUI+VUE。
  
