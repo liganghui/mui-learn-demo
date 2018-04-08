@@ -15,14 +15,14 @@
   * 日报收藏的本地化存储
  
 ## 功能演示 
-<img style="height:490px;width:320px;margin:10px 20px"  src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo1.png">  
-<img style="height:490px;width:320px;margin:10px 20px"  src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo1.gif">
-<br/>
-<img style="height:490px;width:320px;margin:10px 20px"  src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo2.png">
-<img style="height:490px;width:320px;margin:10px 20px" src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo2.gif">
+
+<img  src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo1.png"> <img  src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo1.gif">
 
 
+<img  src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo2.png"> <img  src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo2.gif">
 
+
+<img  src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo3.png"> <img  src="https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/demo/demo3.gif">
 
 ## 如何运行
 
