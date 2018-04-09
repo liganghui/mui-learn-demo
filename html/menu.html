@@ -178,14 +178,20 @@
 						this.i = -1;
 						var obj = plus.webview.getWebviewById('collection');
 						mui.fire(obj, 'close_collection', {});
+						//获取所有显示的webview，关闭除首页和侧滑外的页面
 						var wvs = plus.webview.getDisplayWebview();
+						//延迟关闭，避免影响mui.back()
 						setTimeout(function() {
 							wvs.forEach(function(el) {
-								if(el.id !== ('HBuilder' || 'menu')) {
+								/*
+								 * 特别注意：真机调试时，首页的ID是'HBuilder',
+								 *         打包后首页的ID是appid：H52D200F8
+								 */
+								if(el.id !== ('HBuilder' || 'menu' || 'H52D200F8')) {
 									plus.webview.hide(el.id, 'fade-out', 300);
 								}
 							})
-						}, 200)
+						}, 300)
 					},
 					open_collection: function() {
 						mui.back()

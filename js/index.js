@@ -193,7 +193,7 @@ var news = new Vue({
 			list.stories = obj.stories;
 			list.date=obj.date; 
 			//添加到数组中
-			news.list_items.push(list);
+			news.list_items.unshift(list);
 			//记录当前数据的日期
 			news.dateParam = obj.date;
 			//轮播图数据
