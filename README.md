@@ -41,11 +41,9 @@
   [Xiao Liang的知乎日报 API 分析](https://github.com/izzyleung/ZhihuDailyPurify/wiki/%E7%9F%A5%E4%B9%8E%E6%97%A5%E6%8A%A5-API-%E5%88%86%E6%9E%90)
 
 ## 未来更新计划
-
- * 基于日期控件的日报查看
- * 程序的升级
- * 消息的推送
- * 融合其他新闻API
+  ```
+   取消原定的mui版本后续更新计划，未来会着重研究React-native开发，敬请期待React-native版本。
+ ```
 ## 目录结构
 ```
 │  index.html      APP首页   
