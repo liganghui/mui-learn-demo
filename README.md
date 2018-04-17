@@ -1,12 +1,13 @@
  ## 说明
 
- :wave:这是一个使用Mui开发的仿知乎日报的APP。  
+ :wave:这是一个使用Mui开发的仿知乎日报的APP,适合新手快速了解Mui开发。
 
  主要使用了：MUI+VUE。
  
  如果对您认为写的不错，可以点右上角 "Star" 支持一下 谢谢！:laughing:  
 
- 注：因VUE影响，不兼容安卓4.4及以下版本。
+ 注意：因VUE影响，暂不兼容安卓4.4及以下版本。
+
 ## 实现的功能模块
 
   * 每日热闻和主题日报阅读
@@ -92,3 +93,11 @@
 下拉刷新逻辑：
 ![image](https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/js-2.png)
 
+## 页面是如何进行切换的
+
+详细文档：
+  [MUI](http://dev.dcloud.net.cn/mui/ui/)
+  [H5+](http://www.dcloud.io/docs/api/zh_cn/webview.html)  
+  
+  ![image](https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/js-3.png)
+  
