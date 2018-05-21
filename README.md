@@ -6,7 +6,7 @@
  
  如果对您认为写的不错，可以点右上角 "Star" 支持一下 谢谢！:laughing:  
 
- 注意：因VUE影响，暂不兼容安卓4.4及以下版本。
+ # 注意：Vue仅支持安卓6.0及以上版本！
 
 ## 实现的功能模块
 
@@ -42,10 +42,7 @@
 
   [Xiao Liang的知乎日报 API 分析](https://github.com/izzyleung/ZhihuDailyPurify/wiki/%E7%9F%A5%E4%B9%8E%E6%97%A5%E6%8A%A5-API-%E5%88%86%E6%9E%90)
 
-## 未来更新计划
-  ```
-   取消原定的mui版本后续更新计划，未来会着重研究React-native开发，敬请期待React-native版本。
- ```
+
 ## 目录结构
 ```
 │  index.html      APP首页   
