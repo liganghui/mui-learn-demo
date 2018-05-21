@@ -96,8 +96,8 @@
   
   ![image](https://raw.githubusercontent.com/liganghui/mui-learn-demo/master/doc/js-3.png)
   
-  ## 写在最后
-  
+ ## 写在最后
+
    个人觉得Mui适合简单的业务场景，在开发一些复杂应用时存在很多坑，建议在使用之前一定做好可行性评估，避免做到一半出现杯具。
   如果您刚开始接触APP开发，我建议你放弃MUI，直接学React Native。
   React Native学习曲线要比MUI难一些，但胜在社区巨大，即使遇到问题也很容易解决。
