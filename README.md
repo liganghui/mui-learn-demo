@@ -124,6 +124,50 @@
       
       我本人更看好RN的未来。
       
+  另外推荐一种 适合移动端响应式字体方案：
+   
+  亲测很好用，可实现布局以及字体响应式自适应，直接解决不同终端文字以及布局适配问题。
+``` css  
+//rem响应式
+@media screen and (min-width: 375px) {
+    html {
+        /* iPhone6的375px尺寸作为16px基准，414px正好18px大小, 600 20px */
+        font-size: calc(100% + 2 * (100vw - 375px) / 39)  !important;
+        font-size: calc(16px + 2 * (100vw - 375px) / 39)  !important;
+    }
+}
+@media screen and (min-width: 414px) {
+    html {
+        /* 414px-1000px每100像素宽字体增加1px(18px-22px) */
+        font-size: calc(112.5% + 4 * (100vw - 414px) / 586)  !important;
+        font-size: calc(18px + 4 * (100vw - 414px) / 586)  !important;
+    }
+}
+@media screen and (min-width: 600px) {
+    html {
+        /* 600px-1000px每100像素宽字体增加1px(20px-24px) */
+        font-size: calc(125% + 4 * (100vw - 600px) / 400)  !important;
+        font-size: calc(20px + 4 * (100vw - 600px) / 400)  !important;
+    }
+}
+@media screen and (min-width: 1000px) {
+    html {
+        /* 1000px往后是每100像素0.5px增加 */
+        font-size: calc(137.5% + 6 * (100vw - 1000px) / 1000)  !important;
+        font-size: calc(22px + 6 * (100vw - 1000px) / 1000)  !important;
+    }
+}
+
+```  
+  注:出自张鑫旭博客  本项目中并无使用。
+  
+   
+  
+
+    
+    
+    
+    
       
  
    
