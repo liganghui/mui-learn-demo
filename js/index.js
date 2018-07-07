@@ -16,9 +16,9 @@ var news = new Vue({
 		 *   @description  用于格式化时间字符串 
 		 *   @example  
 		 * 	 	
-		 * 	 实例：formatDate(1479706360)  return "今日热闻"||"xx月xx日"
+		 * 	 实例：formatDate(20180231)  return "今日热闻"||"xx月xx日"
 		 * 
-		 * 	 @param {Nmuber}  val  时间字符串（毫秒单位）
+		 * 	 @param {Nmuber}  val  时间字符串
 		 *   @return {String}  时间字符串
 		 * 
 		 */
