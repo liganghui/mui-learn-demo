@@ -102,67 +102,7 @@
  这个DEMO在代码的角度说实现不够优雅，受限于MUI的传统开发方式，我在首页中融合了大量内容，显的有些杂乱。由于MUI自身的组件缺陷，很多地方也不得不造轮子。整体讲：如果你对MUI有兴趣，可以将它作为了解MUI开发APP方式的基础DEMO，不建议深入学习。
 
   
- ##  问题补充2018/07
-  
-   首先感谢大家的star。
-   
-   自这个DEMO开发完成起，我便每天都在使用，长时间使用过程遇到几个问题，特此指出：  
-   
-    1. 日报列表读取缓存出现图片错位情况。
-    2. 下拉刷新更新多个内容时，部分内容会不显示。(重启应用解决)
-    3. 日报列表缓存缺乏时效性控制，过多缓存降低了加载性能。（手动清空应用缓存解决）
-   
-   虽然我每天都在使用，但由于自身的懒以及对MUI的失望，便一直没有解决。未来或开发RN(React-native)/小程序版本 替代这个。
-   
-   在写完这个DEMO后，因业务需要 先后学习使用 IONIC3 和 RN。  
-   
-   提供一下个人对比，有兴趣可以参考：
-  
-    IONIC3： 可以看做MUI的加强版：ng4(angular4),SCSS,Typescript加持，同时框架本身封装了大量组件，以及做了模拟IOS/Android的交互反馈，系统差异性优化。本质上还是走的WebView的路线，可以浏览器实时调试，但不可以连接真机实时调试开发。
-      
-    RN: RN主要以React为核心，纯组件化，相比IONIC等套壳WebView框架上升一个层级，打包直接为原生代码。框架本身封装大量原生组件，并有众多开源组件提供。社区高度活跃，用户量相比IONIC3大一个数量级，遇到问题好解决。RN中CSS阉割掉一部分，JS的书写方式没有Ionic3中Scss爽。同时开发高度依赖社区组件，稳定性差一些。不可以浏览器实时调试，但可以连接真机实时调试开发，可以有效避免一些意想不到的BUG。
-      
-      我本人更看好RN的未来。
-      
-  另外推荐一种 适合移动端响应式字体方案：
-   
-  亲测很好用，可实现布局以及字体自适应，直接解决不同终端文字以及布局适配问题。
-``` css  
-//rem响应式
-@media screen and (min-width: 375px) {
-    html {
-        /* iPhone6的375px尺寸作为16px基准，414px正好18px大小, 600 20px */
-        font-size: calc(100% + 2 * (100vw - 375px) / 39)  !important;
-        font-size: calc(16px + 2 * (100vw - 375px) / 39)  !important;
-    }
-}
-@media screen and (min-width: 414px) {
-    html {
-        /* 414px-1000px每100像素宽字体增加1px(18px-22px) */
-        font-size: calc(112.5% + 4 * (100vw - 414px) / 586)  !important;
-        font-size: calc(18px + 4 * (100vw - 414px) / 586)  !important;
-    }
-}
-@media screen and (min-width: 600px) {
-    html {
-        /* 600px-1000px每100像素宽字体增加1px(20px-24px) */
-        font-size: calc(125% + 4 * (100vw - 600px) / 400)  !important;
-        font-size: calc(20px + 4 * (100vw - 600px) / 400)  !important;
-    }
-}
-@media screen and (min-width: 1000px) {
-    html {
-        /* 1000px往后是每100像素0.5px增加 */
-        font-size: calc(137.5% + 6 * (100vw - 1000px) / 1000)  !important;
-        font-size: calc(22px + 6 * (100vw - 1000px) / 1000)  !important;
-    }
-}
 
-```  
-  注:出自张鑫旭博客  本项目中并无使用。
-  
-   
-  
 
     
     
