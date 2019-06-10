@@ -103,8 +103,11 @@
  
 ## 2019/2/21
    知乎日报现在已经没有主题日报了,导致主题日报的页面无法查看.
+<br/>
 
-  
+## 2019/6/10
+
+   安利一波最近开发的react-native版本知乎日报 , 各方面都要秒杀MUI的版本. [了解更多](https://github.com/liganghui/react-native-zhihuDaily)
 
 
     
